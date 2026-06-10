@@ -204,7 +204,9 @@ def _run_op(op_id, path_args, args, cfg, endpoints, body=None):
     if getattr(args, "wait", False) and meta.get("returns_task"):
         site_id = path_args.get("id")
         payload = _result(result)
-        tid = (payload.get("task_id") or payload.get("id")) if isinstance(payload, dict) else None
+        # Only poll when a real task_id is returned. Some "create" ops (e.g. site create)
+        # return the new resource id instead, which is not a task and must not be polled.
+        tid = payload.get("task_id") if isinstance(payload, dict) else None
         if site_id and tid:
             result = wait_for_task(cfg, site_id, tid)
     return result
@@ -248,15 +250,24 @@ def build_parser():
     si = add(sub, "site", help="create, clone, or delete a site")
     sisub = si.add_subparsers(dest="site_cmd", required=True)
 
-    sicr = add(sisub, "create", help="create a new site (returns task)")
-    sicr.add_argument("--data", dest="data", default=None,
-                      help="JSON body inline or @file.json")
+    sicr = add(sisub, "create", help="create a new site (returns the new site id)")
+    sicr.add_argument("--name", help="WordPress site title (required unless --data)")
+    sicr.add_argument("--location", type=int, help="location id (required unless --restricted-location or --data)")
+    sicr.add_argument("--restricted-location", type=int, help="dedicated location id (instead of --location)")
+    sicr.add_argument("--admin-username", help="WP admin username (required unless --template-id or --data)")
+    sicr.add_argument("--admin-email", help="WP admin email (required unless --template-id or --data)")
+    sicr.add_argument("--admin-password", help="WP admin password (auto-generated if omitted)")
+    sicr.add_argument("--template-id", help="optional site template id")
+    sicr.add_argument("--install-plugins", help="comma-separated plugin slugs to install")
+    sicr.add_argument("--multisite", action="store_true", help="create as a multisite")
+    sicr.add_argument("--data", dest="data", default=None, help="raw JSON body (overrides the flags above)")
     sicr.set_defaults(func=cmd_site_create)
 
     sicl = add(sisub, "clone", help="clone a site (returns task)")
     sicl.add_argument("site_id")
-    sicl.add_argument("--data", dest="data", default=None,
-                      help="JSON body inline or @file.json")
+    sicl.add_argument("--label", help="label for the cloned site")
+    sicl.add_argument("--location", type=int, help="location id for the clone")
+    sicl.add_argument("--data", dest="data", default=None, help="raw JSON body (overrides the flags above)")
     sicl.set_defaults(func=cmd_site_clone)
 
     sidel = add(sisub, "delete", help="delete a site (destructive)")
@@ -384,7 +395,7 @@ def cmd_call(args, cfg, endpoints):
     result = call_api(cfg, meta["method"], url, body=body, timeout=args.timeout)
     if args.wait and meta.get("returns_task") and "id" in params:
         payload = _result(result)
-        tid = (payload.get("task_id") or payload.get("id")) if isinstance(payload, dict) else None
+        tid = payload.get("task_id") if isinstance(payload, dict) else None
         if tid:
             result = wait_for_task(cfg, params["id"], tid)
     return result
@@ -419,14 +430,35 @@ def cmd_sites_get(args, cfg, endpoints):
     return _run_op(OP_SITES_GET, {"id": args.site_id}, args, cfg, endpoints)
 
 def cmd_site_create(args, cfg, endpoints):
-    body = _load_data(getattr(args, "data", None))
+    if getattr(args, "data", None):
+        body = _load_data(args.data)
+    else:
+        if not args.name:
+            sys.exit("rocket: site create requires --name (or --data). The API also needs "
+                     "--location and (--admin-username + --admin-email) unless --template-id is used.")
+        body = {"name": args.name}
+        opt = {"location": args.location, "restricted_location": args.restricted_location,
+               "admin_username": args.admin_username, "admin_email": args.admin_email,
+               "admin_password": args.admin_password, "template_id": args.template_id,
+               "install_plugins": args.install_plugins}
+        for k, v in opt.items():
+            if v is not None:
+                body[k] = v
+        if args.multisite:
+            body["multisite"] = True
     return _run_op(OP_SITE_CREATE, {}, args, cfg, endpoints, body=body)
 
 def cmd_site_clone(args, cfg, endpoints):
-    body = _load_data(getattr(args, "data", None))
     # Clone is additive (creates a new site) and reversible, so it is not guarded.
-    return _run_op(OP_SITE_CLONE, {"id": args.site_id}, args, cfg, endpoints,
-                   body=body)
+    if getattr(args, "data", None):
+        body = _load_data(args.data)
+    else:
+        body = {}
+        if args.label:
+            body["label"] = args.label
+        if args.location is not None:
+            body["location"] = args.location
+    return _run_op(OP_SITE_CLONE, {"id": args.site_id}, args, cfg, endpoints, body=body)
 
 def cmd_site_delete(args, cfg, endpoints):
     return _run_op(OP_SITE_DELETE, {"id": args.site_id}, args, cfg, endpoints)

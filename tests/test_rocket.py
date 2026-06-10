@@ -256,5 +256,44 @@ class TestOpConstants(unittest.TestCase):
         self.assertEqual(missing, {}, f"OP_* constants not found in endpoint map: {missing}")
 
 
+class TestWaitAndCreate(unittest.TestCase):
+    def setUp(self):
+        self.rocket = load_module()
+        self.endpoints = self.rocket.load_endpoints()
+        self.cfg = {"base_url": "https://api.rocket.net"}
+
+    def _parse(self, argv):
+        return self.rocket.build_parser().parse_args(argv)
+
+    def test_site_create_builds_body_from_args(self):
+        with mock.patch.object(self.rocket, "call_api", return_value={"result": {"id": 1}}) as ca:
+            args = self._parse(["site", "create", "--name", "X", "--location", "16",
+                                "--admin-username", "u", "--admin-email", "e@x.com"])
+            args.func(args, self.cfg, self.endpoints)
+        self.assertEqual(ca.call_args.kwargs.get("body"),
+                         {"name": "X", "location": 16, "admin_username": "u", "admin_email": "e@x.com"})
+
+    def test_site_create_requires_name(self):
+        args = self._parse(["site", "create"])
+        with self.assertRaises(SystemExit):
+            args.func(args, self.cfg, self.endpoints)
+
+    def test_site_create_wait_does_not_poll_on_id_result(self):
+        # site create returns the new site id (not a task_id); --wait must not poll
+        with mock.patch.object(self.rocket, "call_api", return_value={"result": {"id": 9, "domain": "x"}}), \
+             mock.patch.object(self.rocket, "wait_for_task") as wft:
+            args = self._parse(["site", "create", "--name", "X", "--location", "1",
+                                "--admin-username", "u", "--admin-email", "e@x.com", "--wait"])
+            args.func(args, self.cfg, self.endpoints)
+        wft.assert_not_called()
+
+    def test_clone_wait_polls_on_task_id(self):
+        with mock.patch.object(self.rocket, "call_api", return_value={"result": {"task_id": "abc"}}), \
+             mock.patch.object(self.rocket, "wait_for_task", return_value={"task_status": "DONE"}) as wft:
+            args = self._parse(["site", "clone", "42", "--wait"])
+            args.func(args, self.cfg, self.endpoints)
+        wft.assert_called_once()
+
+
 if __name__ == "__main__":
     unittest.main()
