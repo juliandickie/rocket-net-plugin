@@ -40,7 +40,9 @@ Note - Rocket.net sits behind Cloudflare, which blocks the default Python user-a
 
 Run it as `python3 bin/rocket.py <command>` (or `python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py` inside the plugin).
 
-Ergonomic subcommands - `sites list|get`, `site create|clone|delete`, `staging create|publish`, `wpcli`, `backup list|create|restore`, `cache purge|purge-files`, `domains list`, `ssl list`, `plugins list`, `themes list`, `account me|usage`. Note - `cache purge` clears the entire cache; `cache purge-files` purges specific URLs. `backup create` requires `--label`. `site create` requires `--name`, `--location`, `--admin-username`, and `--admin-email`.
+Ergonomic subcommands (run any with `--help`) - `sites list|get`, `site create|clone|delete`, `staging create|publish`, `wpcli`, `backup list|create|restore|get|delete|automated|cloud-list`, `cache purge|purge-files`, `domains list|add|remove`, `ssl list|get|upload|delete`, `plugins list|install|update|set-status|delete|search`, `themes list|install|update|set-status|delete|search`, `users list|add|remove`, `ssh list|add|remove|authorize|deauthorize`, `ftp list|add|update|remove`, `settings get|schema|update`, `reporting bandwidth|visitors|requests`, `pwprotect status|enable|disable|users|add-user|remove-user`, `credentials`, `access-logs`, `maindomain get|status`, `account me|usage`.
+
+Notes - `cache purge` clears the entire cache, `cache purge-files` purges specific URLs. `backup create` requires `--label`. `site create` requires `--name`, `--location`, `--admin-username`, and `--admin-email`. `reporting visitors|requests` take `--duration` (30m, 1h, 6h, 12h, 24h, 72h, 7d, 30d; default 7d). A handful of niche endpoints (file manager, edge settings, activity log, billing, WAF detail reports) remain available via the generic `call`.
 
 Generic escape hatch (reaches all 198 operations) - `rocket call <operationId> --param key=value --data '{...}'`.
 

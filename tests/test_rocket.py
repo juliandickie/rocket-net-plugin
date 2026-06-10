@@ -295,5 +295,49 @@ class TestWaitAndCreate(unittest.TestCase):
         wft.assert_called_once()
 
 
+class TestLongTail(unittest.TestCase):
+    def setUp(self):
+        self.rocket = load_module()
+        self.endpoints = self.rocket.load_endpoints()
+        self.cfg = {"base_url": "https://api.rocket.net"}
+
+    def _parse(self, argv):
+        return self.rocket.build_parser().parse_args(argv)
+
+    def _body(self, ca):
+        return ca.call_args.kwargs.get("body")
+
+    def test_ftp_add_body(self):
+        with mock.patch.object(self.rocket, "call_api", return_value={}) as ca:
+            args = self._parse(["ftp", "add", "5", "--username", "u", "--password", "p",
+                                "--homedir", "/www", "--quota", "500", "--domain", "x.com"])
+            args.func(args, self.cfg, self.endpoints)
+        self.assertEqual(self._body(ca), {"username": "u", "password": "p", "homedir": "/www",
+                                          "quota": 500, "domain": "x.com"})
+
+    def test_plugins_install_sends_comma_string(self):
+        with mock.patch.object(self.rocket, "call_api", return_value={}) as ca:
+            args = self._parse(["plugins", "install", "5", "--plugins", "a,b", "--activate"])
+            args.func(args, self.cfg, self.endpoints)
+        self.assertEqual(self._body(ca), {"plugins": "a,b", "activate": True})
+
+    def test_plugins_search_adds_query_param(self):
+        with mock.patch.object(self.rocket, "call_api", return_value={}) as ca:
+            args = self._parse(["plugins", "search", "5", "--query", "seo"])
+            args.func(args, self.cfg, self.endpoints)
+        self.assertIn("query=seo", ca.call_args[0][2])
+
+    def test_ssl_upload_clean_error_on_missing_file(self):
+        args = self._parse(["ssl", "upload", "5", "--domains", "a.com",
+                            "--certificate-file", "/no/such/cert", "--key-file", "/no/such/key"])
+        with self.assertRaises(SystemExit):
+            args.func(args, self.cfg, self.endpoints)
+
+    def test_users_remove_is_destructive(self):
+        args = self._parse(["users", "remove", "5", "12"])
+        with self.assertRaises(SystemExit):
+            args.func(args, self.cfg, self.endpoints)
+
+
 if __name__ == "__main__":
     unittest.main()

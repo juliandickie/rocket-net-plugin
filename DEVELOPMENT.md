@@ -30,6 +30,7 @@ These were discovered during a live smoke test on 2026-05-20-era WordPress 7.0 h
   - `backup` restore needs `{backup_directory, backup_database}`.
   - `staging` create needs `{vanity_domain}` (nullable body). CLI flag `--vanity-domain`.
   - site create needs `{name, location, admin_username, admin_email}` at runtime. The OpenAPI schema marks only `name` required, but the API 400s on missing location or admin fields unless `template_id` is used. CLI: `site create --name X --location <id> --admin-username U --admin-email E [--admin-password ...] [--install-plugins a,b] [--multisite]`. Location ids come from operationId `...sites_locations_get` (they are regions; e.g. 16/20/27 are Asia Pacific). site clone body is all-optional: `site clone <id> [--label L] [--location <id>]`. Both also accept `--data '{...}'` as a full override.
+  - Long-tail runtime requirements found live: FTP create needs ALL of username/password/homedir/quota/domain; SSH import needs name+key; SSL upload needs domains (an array) + certificate + key (PEM file contents). plugins/themes install and delete take a COMMA-SEPARATED STRING (not an array) under `plugins`/`themes`. reporting visitors and requests require a `duration` query param (enum 30m, 1h, 6h, 12h, 24h, 72h, 7d, 30d).
   - Before adding any new POST subcommand, check `has_body` in `bin/rocket_endpoints.json` and read the request schema in `reference/rocket-openapi.yaml`.
 
 ## CLI conventions
@@ -54,7 +55,7 @@ These were discovered during a live smoke test on 2026-05-20-era WordPress 7.0 h
 
 ## Testing
 
-- Unit tests (offline, no network, no creds): `python3 -m unittest tests.test_rocket -v`. 29 tests covering config/auth/http/envelope/task-find/op-constants/subcommands/guards/create-and-wait.
+- Unit tests (offline, no network, no creds): `python3 -m unittest tests.test_rocket -v`. 34 tests covering config/auth/http/envelope/task-find/op-constants/subcommands/guards/create-and-wait/long-tail.
 
 - Live smoke test (needs creds + a real site): `ROCKET_SMOKE_SITE=<id> ./scripts/test-smoke.sh`. Only ever run against a throwaway or staging site, never production.
 
@@ -66,7 +67,8 @@ Gotcha confirmed live: the API locks a site while it is being cloned, so a concu
 
 ## Known gaps and v0.2 TODOs
 
-- Ergonomic subcommands for the rest of the full surface currently reachable only via generic `call`: users, SSH keys, FTP, file manager, reporting/WAF, billing, automated/cloud backups, password protection, domains add/edit, SSL upload, plugin/theme install.
+- Most of the full surface now has ergonomic subcommands (users, ssh, ftp, settings, reporting, pwprotect, credentials, access-logs, maindomain, plus install/update/delete for plugins/themes/domains/ssl/backup). A few niche endpoints remain generic-`call`-only: file manager, domain and maindomain edge_settings, activity log, automated/cloud backup restore variants, billing, WAF detail reports, shop_shield. Wrap them if a workflow needs them.
+- Refresh the skills (rocket-users-access, rocket-reporting-waf, rocket-plugins-themes, rocket-domains-ssl) to use the new ergonomic subcommands instead of generic `call` (they still work via `call`, just verbose).
 - Exercise the bundled MCP through a real plugin enable on a machine that supports it.
 - Distribution: push to a remote repo and publish to the outfit + ai-loadout marketplaces. Scrub docs/ (spec, plan, any local dev notes) from history before any public push.
 

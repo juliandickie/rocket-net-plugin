@@ -193,9 +193,14 @@ def build_dry_run(method, url, body):
 
 # --- Shared subcommand helper (Phase 3) ---
 
-def _run_op(op_id, path_args, args, cfg, endpoints, body=None):
+def _run_op(op_id, path_args, args, cfg, endpoints, body=None, query=None):
     """Resolve op, guard destructive, call, optionally wait. Used by all subcommands."""
     url, meta = resolve_op(endpoints, op_id, path_args)
+    if query:
+        from urllib.parse import urlencode
+        q = {k: v for k, v in query.items() if v is not None}
+        if q:
+            url = url + "?" + urlencode(q)
     if getattr(args, "dry_run", False):
         return build_dry_run(meta["method"], url, body)
     confirm_destructive(meta, getattr(args, "yes", False))
@@ -317,6 +322,10 @@ def build_parser():
     bkre.add_argument("--no-files", action="store_true", help="do not restore site files")
     bkre.add_argument("--no-database", action="store_true", help="do not restore the database")
     bkre.set_defaults(func=cmd_backup_restore)
+    x = add(bksub, "get", help="get a backup"); x.add_argument("site_id"); x.add_argument("backup_id"); x.set_defaults(func=cmd_backup_get)
+    x = add(bksub, "delete", help="delete a backup (destructive)"); x.add_argument("site_id"); x.add_argument("backup_id"); x.set_defaults(func=cmd_backup_delete)
+    x = add(bksub, "automated", help="list automated backups"); x.add_argument("site_id"); x.set_defaults(func=cmd_backup_automated)
+    x = add(bksub, "cloud-list", help="list cloud backups"); x.add_argument("site_id"); x.set_defaults(func=cmd_cloud_backup_list)
 
     # --- cache ---
     ca = add(sub, "cache", help="manage site cache")
@@ -337,6 +346,8 @@ def build_parser():
     dmlist = add(dmsub, "list", help="list domains for a site")
     dmlist.add_argument("site_id")
     dmlist.set_defaults(func=cmd_domains_list)
+    x = add(dmsub, "add", help="add an additional domain"); x.add_argument("site_id"); x.add_argument("--domain", required=True); x.set_defaults(func=cmd_domains_add)
+    x = add(dmsub, "remove", help="remove a domain (destructive)"); x.add_argument("site_id"); x.add_argument("domain_id"); x.set_defaults(func=cmd_domains_remove)
 
     # --- ssl ---
     sl = add(sub, "ssl", help="manage SSL certificates")
@@ -344,6 +355,9 @@ def build_parser():
     sllist = add(slsub, "list", help="list SSL certificates for a site")
     sllist.add_argument("site_id")
     sllist.set_defaults(func=cmd_ssl_list)
+    x = add(slsub, "get", help="get a certificate"); x.add_argument("site_id"); x.add_argument("certificate_id"); x.set_defaults(func=cmd_ssl_get)
+    x = add(slsub, "upload", help="upload a custom SSL certificate"); x.add_argument("site_id"); x.add_argument("--domains", required=True, help="comma-separated domains"); x.add_argument("--certificate-file", required=True, help="path to the certificate PEM"); x.add_argument("--key-file", required=True, help="path to the private key PEM"); x.set_defaults(func=cmd_ssl_upload)
+    x = add(slsub, "delete", help="delete a certificate (destructive)"); x.add_argument("site_id"); x.add_argument("certificate_id"); x.set_defaults(func=cmd_ssl_delete)
 
     # --- plugins ---
     pl = add(sub, "plugins", help="manage WordPress plugins")
@@ -351,6 +365,11 @@ def build_parser():
     pllist = add(plsub, "list", help="list plugins for a site")
     pllist.add_argument("site_id")
     pllist.set_defaults(func=cmd_plugins_list)
+    x = add(plsub, "install", help="install plugins"); x.add_argument("site_id"); x.add_argument("--plugins", required=True, help="comma-separated slugs"); x.add_argument("--activate", action="store_true"); x.add_argument("--custom-url"); x.set_defaults(func=cmd_plugins_install)
+    x = add(plsub, "update", help="update a plugin"); x.add_argument("site_id"); x.add_argument("--plugin", required=True); x.set_defaults(func=cmd_plugins_update)
+    x = add(plsub, "set-status", help="activate or deactivate a plugin"); x.add_argument("site_id"); x.add_argument("--plugin", required=True); x.add_argument("--status", required=True, choices=["active", "inactive"]); x.set_defaults(func=cmd_plugins_status)
+    x = add(plsub, "delete", help="delete plugins (destructive)"); x.add_argument("site_id"); x.add_argument("--plugins", required=True, help="comma-separated slugs"); x.set_defaults(func=cmd_plugins_delete)
+    x = add(plsub, "search", help="search the plugin directory"); x.add_argument("site_id"); x.add_argument("--query", required=True); x.set_defaults(func=cmd_plugins_search)
 
     # --- themes ---
     th = add(sub, "themes", help="manage WordPress themes")
@@ -358,12 +377,74 @@ def build_parser():
     thlist = add(thsub, "list", help="list themes for a site")
     thlist.add_argument("site_id")
     thlist.set_defaults(func=cmd_themes_list)
+    x = add(thsub, "install", help="install themes"); x.add_argument("site_id"); x.add_argument("--themes", required=True, help="comma-separated slugs"); x.add_argument("--activate", action="store_true"); x.add_argument("--custom-url"); x.set_defaults(func=cmd_themes_install)
+    x = add(thsub, "update", help="update a theme"); x.add_argument("site_id"); x.add_argument("--theme", required=True); x.set_defaults(func=cmd_themes_update)
+    x = add(thsub, "set-status", help="activate a theme"); x.add_argument("site_id"); x.add_argument("--theme", required=True); x.add_argument("--status", required=True); x.set_defaults(func=cmd_themes_status)
+    x = add(thsub, "delete", help="delete themes (destructive)"); x.add_argument("site_id"); x.add_argument("--themes", required=True, help="comma-separated slugs"); x.set_defaults(func=cmd_themes_delete)
+    x = add(thsub, "search", help="search the theme directory"); x.add_argument("site_id"); x.add_argument("--query", required=True); x.set_defaults(func=cmd_themes_search)
 
     # --- account ---
     ac = add(sub, "account", help="account information")
     acsub = ac.add_subparsers(dest="account_cmd", required=True)
     add(acsub, "me", help="get current account info").set_defaults(func=cmd_account_me)
     add(acsub, "usage", help="get account usage").set_defaults(func=cmd_account_usage)
+
+    # --- users ---
+    u = add(sub, "users", help="manage site users")
+    usub = u.add_subparsers(dest="users_cmd", required=True)
+    x = add(usub, "list", help="list site users"); x.add_argument("site_id"); x.set_defaults(func=cmd_users_list)
+    x = add(usub, "add", help="invite a user"); x.add_argument("site_id"); x.add_argument("--name", required=True); x.add_argument("--email", required=True); x.set_defaults(func=cmd_users_add)
+    x = add(usub, "remove", help="remove a user (destructive)"); x.add_argument("site_id"); x.add_argument("user_id"); x.set_defaults(func=cmd_users_remove)
+
+    # --- ssh ---
+    sh = add(sub, "ssh", help="manage SSH keys")
+    shsub = sh.add_subparsers(dest="ssh_cmd", required=True)
+    x = add(shsub, "list", help="list SSH keys"); x.add_argument("site_id"); x.set_defaults(func=cmd_ssh_list)
+    x = add(shsub, "add", help="import an SSH key"); x.add_argument("site_id"); x.add_argument("--name", required=True); x.add_argument("--key", help="public key text"); x.add_argument("--key-file", help="read the public key from a file"); x.add_argument("--passphrase"); x.set_defaults(func=cmd_ssh_add)
+    x = add(shsub, "remove", help="delete an SSH key (destructive)"); x.add_argument("site_id"); x.add_argument("--name", required=True); x.set_defaults(func=cmd_ssh_remove)
+    x = add(shsub, "authorize", help="authorize an SSH key"); x.add_argument("site_id"); x.add_argument("--name", required=True); x.set_defaults(func=cmd_ssh_authorize)
+    x = add(shsub, "deauthorize", help="deauthorize an SSH key (destructive)"); x.add_argument("site_id"); x.add_argument("--name", required=True); x.set_defaults(func=cmd_ssh_deauthorize)
+
+    # --- ftp ---
+    ft = add(sub, "ftp", help="manage FTP accounts")
+    ftsub = ft.add_subparsers(dest="ftp_cmd", required=True)
+    x = add(ftsub, "list", help="list FTP accounts"); x.add_argument("site_id"); x.set_defaults(func=cmd_ftp_list)
+    x = add(ftsub, "add", help="create an FTP account"); x.add_argument("site_id"); x.add_argument("--username", required=True); x.add_argument("--password", required=True); x.add_argument("--homedir", required=True); x.add_argument("--quota", type=int, required=True); x.add_argument("--domain", required=True); x.set_defaults(func=cmd_ftp_add)
+    x = add(ftsub, "update", help="update an FTP account"); x.add_argument("site_id"); x.add_argument("--password"); x.add_argument("--quota", type=int); x.add_argument("--homedir"); x.set_defaults(func=cmd_ftp_update)
+    x = add(ftsub, "remove", help="delete an FTP account (destructive)"); x.add_argument("site_id"); x.add_argument("--username", required=True); x.set_defaults(func=cmd_ftp_remove)
+
+    # --- settings ---
+    se = add(sub, "settings", help="site settings")
+    sesub = se.add_subparsers(dest="settings_cmd", required=True)
+    x = add(sesub, "get", help="get site settings"); x.add_argument("site_id"); x.set_defaults(func=cmd_settings_get)
+    x = add(sesub, "schema", help="get the settings schema"); x.add_argument("site_id"); x.set_defaults(func=cmd_settings_schema)
+    x = add(sesub, "update", help="update site settings"); x.add_argument("site_id"); x.add_argument("--php-version"); x.add_argument("--data", help="raw JSON settings body"); x.set_defaults(func=cmd_settings_update)
+
+    # --- reporting ---
+    rp = add(sub, "reporting", help="site reporting")
+    rpsub = rp.add_subparsers(dest="reporting_cmd", required=True)
+    x = add(rpsub, "bandwidth", help="bandwidth usage"); x.add_argument("site_id"); x.set_defaults(func=cmd_report_bandwidth)
+    _DUR = ["30m", "1h", "6h", "12h", "24h", "72h", "7d", "30d"]
+    x = add(rpsub, "visitors", help="visitor stats"); x.add_argument("site_id"); x.add_argument("--duration", default="7d", choices=_DUR); x.set_defaults(func=cmd_report_visitors)
+    x = add(rpsub, "requests", help="total request counts"); x.add_argument("site_id"); x.add_argument("--duration", default="7d", choices=_DUR); x.set_defaults(func=cmd_report_requests)
+
+    # --- password protection ---
+    pw = add(sub, "pwprotect", help="site password protection")
+    pwsub = pw.add_subparsers(dest="pwprotect_cmd", required=True)
+    x = add(pwsub, "status", help="protection status"); x.add_argument("site_id"); x.set_defaults(func=cmd_pwp_status)
+    x = add(pwsub, "enable", help="enable protection"); x.add_argument("site_id"); x.set_defaults(func=cmd_pwp_enable)
+    x = add(pwsub, "disable", help="disable protection (destructive)"); x.add_argument("site_id"); x.set_defaults(func=cmd_pwp_disable)
+    x = add(pwsub, "users", help="list protection users"); x.add_argument("site_id"); x.set_defaults(func=cmd_pwp_users)
+    x = add(pwsub, "add-user", help="add a protection user"); x.add_argument("site_id"); x.add_argument("--username", required=True); x.add_argument("--password", required=True); x.set_defaults(func=cmd_pwp_add_user)
+    x = add(pwsub, "remove-user", help="remove a protection user (destructive)"); x.add_argument("site_id"); x.add_argument("user_id"); x.set_defaults(func=cmd_pwp_remove_user)
+
+    # --- single-shot reads ---
+    x = add(sub, "credentials", help="get SFTP/SSH credentials for a site"); x.add_argument("site_id"); x.set_defaults(func=cmd_credentials)
+    x = add(sub, "access-logs", help="get access logs for a site"); x.add_argument("site_id"); x.set_defaults(func=cmd_access_logs)
+    md = add(sub, "maindomain", help="primary domain info")
+    mdsub = md.add_subparsers(dest="maindomain_cmd", required=True)
+    x = add(mdsub, "get", help="get the primary domain"); x.add_argument("site_id"); x.set_defaults(func=cmd_maindomain_get)
+    x = add(mdsub, "status", help="primary domain status"); x.add_argument("site_id"); x.set_defaults(func=cmd_maindomain_status)
 
     return p
 
@@ -380,6 +461,13 @@ def _load_data(data):
         with open(data[1:]) as fh:
             return json.load(fh)
     return json.loads(data)
+
+def _read_file(path):
+    try:
+        with open(path) as fh:
+            return fh.read()
+    except OSError as ex:
+        sys.exit(f"rocket: cannot read {path}: {ex}")
 
 def cmd_call(args, cfg, endpoints):
     params = _parse_params(args.param)
@@ -421,6 +509,55 @@ OP_PLUGINS_LIST  = "app.controllers.plugins_controller.sites_id_plugins_get"
 OP_THEMES_LIST   = "app.controllers.themes_controller.sites_id_themes_get"
 OP_ACCOUNT_ME    = "app.controllers.account_controller.account_me_get"
 OP_ACCOUNT_USAGE = "app.controllers.account_controller.account_usage_get"
+
+# Long-tail operationIds (Phase 7)
+OP_USERS_LIST = "app.controllers.site_users_controller.sites_id_users_get"
+OP_USERS_ADD = "app.controllers.site_users_controller.sites_id_users_post"
+OP_USERS_REMOVE = "app.controllers.site_users_controller.sites_id_users_user_id_delete"
+OP_SSH_LIST = "app.controllers.ssh_keys_controller.sites_id_ssh_keys_get"
+OP_SSH_ADD = "app.controllers.ssh_keys_controller.sites_id_ssh_keys_post"
+OP_SSH_REMOVE = "app.controllers.ssh_keys_controller.sites_id_ssh_keys_delete"
+OP_SSH_AUTHORIZE = "app.controllers.ssh_keys_controller.sites_id_ssh_keys_authorize_post"
+OP_SSH_DEAUTHORIZE = "app.controllers.ssh_keys_controller.sites_id_ssh_keys_deauthorize_post"
+OP_FTP_LIST = "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_get"
+OP_FTP_ADD = "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_post"
+OP_FTP_UPDATE = "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_patch"
+OP_FTP_REMOVE = "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_delete"
+OP_PLUGINS_INSTALL = "app.controllers.plugins_controller.sites_id_plugins_post"
+OP_PLUGINS_UPDATE = "app.controllers.plugins_controller.sites_id_plugins_put"
+OP_PLUGINS_STATUS = "app.controllers.plugins_controller.sites_id_plugins_patch"
+OP_PLUGINS_DELETE = "app.controllers.plugins_controller.sites_id_plugins_delete"
+OP_PLUGINS_SEARCH = "app.controllers.plugins_controller.sites_id_plugins_search_get"
+OP_THEMES_INSTALL = "app.controllers.themes_controller.sites_id_themes_post"
+OP_THEMES_UPDATE = "app.controllers.themes_controller.sites_id_themes_put"
+OP_THEMES_STATUS = "app.controllers.themes_controller.sites_id_themes_patch"
+OP_THEMES_DELETE = "app.controllers.themes_controller.sites_id_themes_delete"
+OP_THEMES_SEARCH = "app.controllers.themes_controller.sites_id_themes_search_get"
+OP_DOMAINS_ADD = "app.controllers.domains_controller.sites_id_domains_post"
+OP_DOMAINS_REMOVE = "app.controllers.domains_controller.sites_id_domains_domain_id_delete"
+OP_SSL_GET = "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_id_get"
+OP_SSL_UPLOAD = "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_post"
+OP_SSL_DELETE = "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_id_delete"
+OP_SETTINGS_GET = "app.controllers.site_settings_controller.sites_id_settings_get"
+OP_SETTINGS_SCHEMA = "app.controllers.site_settings_controller.sites_id_settings_schema_get"
+OP_SETTINGS_UPDATE = "app.controllers.site_settings_controller.sites_id_settings_patch"
+OP_BACKUP_GET = "app.controllers.backups_controller.sites_id_backup_backup_id_get"
+OP_BACKUP_DELETE = "app.controllers.backups_controller.sites_id_backup_backup_id_delete"
+OP_BACKUP_AUTOMATED = "app.controllers.backups_controller.sites_id_backup_automated_get"
+OP_CLOUD_BACKUP_LIST = "app.controllers.cloud_backups_controller.sites_id_cloud_backups_get"
+OP_CREDENTIALS = "app.controllers.sites_controller.sites_id_credentials_get"
+OP_ACCESS_LOGS = "app.controllers.access_logs_controller.sites_id_access_logs_get"
+OP_MAINDOMAIN_GET = "app.controllers.domains_controller.sites_id_maindomain_get"
+OP_MAINDOMAIN_STATUS = "app.controllers.domains_controller.sites_id_maindomain_status_get"
+OP_PWP_STATUS = "app.controllers.password_protection_controller.sites_id_password_protection_get"
+OP_PWP_ENABLE = "app.controllers.password_protection_controller.sites_id_password_protection_post"
+OP_PWP_DISABLE = "app.controllers.password_protection_controller.sites_id_password_protection_delete"
+OP_PWP_USERS = "app.controllers.password_protection_controller.sites_id_password_protection_users_get"
+OP_PWP_ADD_USER = "app.controllers.password_protection_controller.sites_id_password_protection_users_post"
+OP_PWP_REMOVE_USER = "app.controllers.password_protection_controller.sites_id_password_protection_users_user_id_delete"
+OP_REPORT_BANDWIDTH = "app.controllers.bandwidth_controller.sites_id_reporting_bandwidth_get"
+OP_REPORT_VISITORS = "app.controllers.reporting_controller.reporting_sites_id_visitors_get"
+OP_REPORT_REQUESTS = "app.controllers.reporting_controller.sites_id_reporting_total_requests_get"
 
 
 def cmd_sites_list(args, cfg, endpoints):
@@ -520,6 +657,106 @@ def cmd_account_me(args, cfg, endpoints):
 
 def cmd_account_usage(args, cfg, endpoints):
     return _run_op(OP_ACCOUNT_USAGE, {}, args, cfg, endpoints)
+
+# --- Long-tail subcommand implementations (Phase 7) ---
+
+def cmd_users_list(a, c, e): return _run_op(OP_USERS_LIST, {"id": a.site_id}, a, c, e)
+def cmd_users_add(a, c, e): return _run_op(OP_USERS_ADD, {"id": a.site_id}, a, c, e, body={"name": a.name, "email": a.email})
+def cmd_users_remove(a, c, e): return _run_op(OP_USERS_REMOVE, {"id": a.site_id, "user_id": a.user_id}, a, c, e)
+
+def cmd_ssh_list(a, c, e): return _run_op(OP_SSH_LIST, {"id": a.site_id}, a, c, e)
+def cmd_ssh_add(a, c, e):
+    key = a.key
+    if getattr(a, "key_file", None):
+        key = _read_file(a.key_file).strip()
+    if not key:
+        sys.exit("rocket: ssh add requires --key or --key-file")
+    body = {"name": a.name, "key": key}
+    if a.passphrase:
+        body["passphrase"] = a.passphrase
+    return _run_op(OP_SSH_ADD, {"id": a.site_id}, a, c, e, body=body)
+def cmd_ssh_remove(a, c, e): return _run_op(OP_SSH_REMOVE, {"id": a.site_id}, a, c, e, body={"name": a.name})
+def cmd_ssh_authorize(a, c, e): return _run_op(OP_SSH_AUTHORIZE, {"id": a.site_id}, a, c, e, body={"name": a.name})
+def cmd_ssh_deauthorize(a, c, e): return _run_op(OP_SSH_DEAUTHORIZE, {"id": a.site_id}, a, c, e, body={"name": a.name})
+
+def cmd_ftp_list(a, c, e): return _run_op(OP_FTP_LIST, {"id": a.site_id}, a, c, e)
+def cmd_ftp_add(a, c, e):
+    body = {"username": a.username, "password": a.password, "homedir": a.homedir,
+            "quota": a.quota, "domain": a.domain}
+    return _run_op(OP_FTP_ADD, {"id": a.site_id}, a, c, e, body=body)
+def cmd_ftp_update(a, c, e):
+    body = {}
+    if a.password: body["new_password"] = a.password
+    if a.quota is not None: body["quota"] = a.quota
+    if a.homedir: body["homedir"] = a.homedir
+    return _run_op(OP_FTP_UPDATE, {"id": a.site_id}, a, c, e, body=body)
+def cmd_ftp_remove(a, c, e): return _run_op(OP_FTP_REMOVE, {"id": a.site_id}, a, c, e, body={"username": a.username})
+
+def cmd_plugins_install(a, c, e):
+    body = {"plugins": a.plugins}
+    if a.activate: body["activate"] = True
+    if getattr(a, "custom_url", None): body["custom_url"] = a.custom_url
+    return _run_op(OP_PLUGINS_INSTALL, {"id": a.site_id}, a, c, e, body=body)
+def cmd_plugins_update(a, c, e): return _run_op(OP_PLUGINS_UPDATE, {"id": a.site_id}, a, c, e, body={"plugin": a.plugin})
+def cmd_plugins_status(a, c, e): return _run_op(OP_PLUGINS_STATUS, {"id": a.site_id}, a, c, e, body={"plugin": a.plugin, "status": a.status})
+def cmd_plugins_delete(a, c, e): return _run_op(OP_PLUGINS_DELETE, {"id": a.site_id}, a, c, e, body={"plugins": a.plugins})
+def cmd_plugins_search(a, c, e): return _run_op(OP_PLUGINS_SEARCH, {"id": a.site_id}, a, c, e, query={"query": a.query})
+
+def cmd_themes_install(a, c, e):
+    body = {"themes": a.themes}
+    if a.activate: body["activate"] = True
+    if getattr(a, "custom_url", None): body["custom_url"] = a.custom_url
+    return _run_op(OP_THEMES_INSTALL, {"id": a.site_id}, a, c, e, body=body)
+def cmd_themes_update(a, c, e): return _run_op(OP_THEMES_UPDATE, {"id": a.site_id}, a, c, e, body={"theme": a.theme})
+def cmd_themes_status(a, c, e): return _run_op(OP_THEMES_STATUS, {"id": a.site_id}, a, c, e, body={"theme": a.theme, "status": a.status})
+def cmd_themes_delete(a, c, e): return _run_op(OP_THEMES_DELETE, {"id": a.site_id}, a, c, e, body={"themes": a.themes})
+def cmd_themes_search(a, c, e): return _run_op(OP_THEMES_SEARCH, {"id": a.site_id}, a, c, e, query={"query": a.query})
+
+def cmd_domains_add(a, c, e): return _run_op(OP_DOMAINS_ADD, {"id": a.site_id}, a, c, e, body={"domain": a.domain})
+def cmd_domains_remove(a, c, e): return _run_op(OP_DOMAINS_REMOVE, {"id": a.site_id, "domain_id": a.domain_id}, a, c, e)
+
+def cmd_ssl_get(a, c, e): return _run_op(OP_SSL_GET, {"id": a.site_id, "certificate_id": a.certificate_id}, a, c, e)
+def cmd_ssl_upload(a, c, e):
+    cert = _read_file(a.certificate_file)
+    key = _read_file(a.key_file)
+    body = {"domains": [d.strip() for d in a.domains.split(",") if d.strip()],
+            "certificate": cert, "key": key}
+    return _run_op(OP_SSL_UPLOAD, {"id": a.site_id}, a, c, e, body=body)
+def cmd_ssl_delete(a, c, e): return _run_op(OP_SSL_DELETE, {"id": a.site_id, "certificate_id": a.certificate_id}, a, c, e)
+
+def cmd_settings_get(a, c, e): return _run_op(OP_SETTINGS_GET, {"id": a.site_id}, a, c, e)
+def cmd_settings_schema(a, c, e): return _run_op(OP_SETTINGS_SCHEMA, {"id": a.site_id}, a, c, e)
+def cmd_settings_update(a, c, e):
+    if getattr(a, "data", None):
+        body = _load_data(a.data)
+    else:
+        body = {}
+        if a.php_version:
+            body["new_php_version"] = a.php_version
+        if not body:
+            sys.exit("rocket: settings update requires --php-version or --data")
+    return _run_op(OP_SETTINGS_UPDATE, {"id": a.site_id}, a, c, e, body=body)
+
+def cmd_backup_get(a, c, e): return _run_op(OP_BACKUP_GET, {"id": a.site_id, "backup_id": a.backup_id}, a, c, e)
+def cmd_backup_delete(a, c, e): return _run_op(OP_BACKUP_DELETE, {"id": a.site_id, "backup_id": a.backup_id}, a, c, e)
+def cmd_backup_automated(a, c, e): return _run_op(OP_BACKUP_AUTOMATED, {"id": a.site_id}, a, c, e)
+def cmd_cloud_backup_list(a, c, e): return _run_op(OP_CLOUD_BACKUP_LIST, {"id": a.site_id}, a, c, e)
+
+def cmd_credentials(a, c, e): return _run_op(OP_CREDENTIALS, {"id": a.site_id}, a, c, e)
+def cmd_access_logs(a, c, e): return _run_op(OP_ACCESS_LOGS, {"id": a.site_id}, a, c, e)
+def cmd_maindomain_get(a, c, e): return _run_op(OP_MAINDOMAIN_GET, {"id": a.site_id}, a, c, e)
+def cmd_maindomain_status(a, c, e): return _run_op(OP_MAINDOMAIN_STATUS, {"id": a.site_id}, a, c, e)
+
+def cmd_pwp_status(a, c, e): return _run_op(OP_PWP_STATUS, {"id": a.site_id}, a, c, e)
+def cmd_pwp_enable(a, c, e): return _run_op(OP_PWP_ENABLE, {"id": a.site_id}, a, c, e)
+def cmd_pwp_disable(a, c, e): return _run_op(OP_PWP_DISABLE, {"id": a.site_id}, a, c, e)
+def cmd_pwp_users(a, c, e): return _run_op(OP_PWP_USERS, {"id": a.site_id}, a, c, e)
+def cmd_pwp_add_user(a, c, e): return _run_op(OP_PWP_ADD_USER, {"id": a.site_id}, a, c, e, body={"username": a.username, "password": a.password})
+def cmd_pwp_remove_user(a, c, e): return _run_op(OP_PWP_REMOVE_USER, {"id": a.site_id, "user_id": a.user_id}, a, c, e)
+
+def cmd_report_bandwidth(a, c, e): return _run_op(OP_REPORT_BANDWIDTH, {"id": a.site_id}, a, c, e)
+def cmd_report_visitors(a, c, e): return _run_op(OP_REPORT_VISITORS, {"id": a.site_id}, a, c, e, query={"duration": a.duration})
+def cmd_report_requests(a, c, e): return _run_op(OP_REPORT_REQUESTS, {"id": a.site_id}, a, c, e, query={"duration": a.duration})
 
 
 def main(argv=None):
