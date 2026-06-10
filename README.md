@@ -2,7 +2,9 @@
 
 A Claude Code plugin to manage Rocket.net WordPress hosting two ways - conversationally through Rocket.net's bundled MCP server, and deterministically through a zero-dependency Python CLI. Skills and commands add the workflow knowledge on top.
 
-Status - v0.1.0. Build complete and validated (25 unit tests, `claude plugin validate --strict`). Live smoke test PASSED against a real site - authentication, all read endpoints, WP-CLI, cache purge, and the async backup-task polling are confirmed working against the live API. Mutating operations that change a whole site (site create and clone, staging create and publish, backup restore) are built from the spec but not yet live-tested.
+Status - v0.1.0. Build complete and validated (29 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is configured but not yet exercised through a plugin enable.
+
+Continuing development, or running on another machine? Read DEVELOPMENT.md first - it captures the live-API gotchas (Cloudflare user-agent, response envelope, task polling, which POST endpoints need bodies) and machine setup.
 
 ## What is in the box
 
@@ -38,7 +40,7 @@ Note - Rocket.net sits behind Cloudflare, which blocks the default Python user-a
 
 Run it as `python3 bin/rocket.py <command>` (or `python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py` inside the plugin).
 
-Ergonomic subcommands - `sites list|get`, `site create|clone|delete`, `staging create|publish`, `wpcli`, `backup list|create|restore`, `cache purge|purge-files`, `domains list`, `ssl list`, `plugins list`, `themes list`, `account me|usage`. Note - `cache purge` clears the entire cache; `cache purge-files` purges specific URLs. `backup create` requires `--label`.
+Ergonomic subcommands - `sites list|get`, `site create|clone|delete`, `staging create|publish`, `wpcli`, `backup list|create|restore`, `cache purge|purge-files`, `domains list`, `ssl list`, `plugins list`, `themes list`, `account me|usage`. Note - `cache purge` clears the entire cache; `cache purge-files` purges specific URLs. `backup create` requires `--label`. `site create` requires `--name`, `--location`, `--admin-username`, and `--admin-email`.
 
 Generic escape hatch (reaches all 198 operations) - `rocket call <operationId> --param key=value --data '{...}'`.
 

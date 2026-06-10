@@ -22,14 +22,14 @@ These were discovered during a live smoke test on 2026-05-20-era WordPress 7.0 h
 
 - Every response is wrapped in an envelope: `{success, errors, messages, result, metadata}`. Real data is under `result`. A few endpoints return a bare array instead (e.g. `ssl list` returns `[]` when empty). The CLI has `_result()` to unwrap; use it for any new response parsing.
 
-- Async task polling. create/clone/backup return `result.task_id` (a UUID) and `task_level`. Poll `GET /v1/sites/{id}/tasks` (its `result` is a LIST). Task item keys: `id` (the UUID), `task_status` (seen: DONE; expect IN_PROGRESS/FAILED), `perc`, `task_type`, `site_id`. The status field is `task_status`, NOT `status`. `--wait` is wired to this; `backup create --wait` is validated end to end.
+- Async task polling. clone, staging create, backup create, and backup restore return `result.task_id` (a UUID) plus `task_level`. Poll `GET /v1/sites/{id}/tasks` (its `result` is a LIST). Task item keys: `id` (the UUID), `task_status` (seen: DONE and IN_PROGRESS; expect FAILED), `perc`, `task_type`, `site_id`. The status field is `task_status`, NOT `status`. IMPORTANT - `site create` is different: it returns the new `{id, domain}` directly (no task_id) and provisions in the background, so `--wait` must NOT poll it. The `--wait` extraction uses `task_id` only and never falls back to `id`. All of clone, staging publish, backup create, and backup restore `--wait` are validated end to end.
 
 - Many POST endpoints REQUIRE a request body or they 400 with "RequestBody is required". Known ones and the bodies the CLI sends:
   - `cache/purge` needs `{files: [...]}` (this is the file-specific purge). `cache/purge_everything` needs no body. So the CLI maps `cache purge` to purge_everything (the common intent) and `cache purge-files <urls>` to the file purge.
   - `backup` create needs `{label, backup_directory, backup_database}` (label required). CLI: `backup create <site> --label X [--no-files] [--no-database]`.
   - `backup` restore needs `{backup_directory, backup_database}`.
   - `staging` create needs `{vanity_domain}` (nullable body). CLI flag `--vanity-domain`.
-  - site create and clone need bodies (CreateSiteRequest etc.) - the CLI currently only exposes `--data '{...}'` for these; friendly args are a v0.2 TODO.
+  - site create needs `{name, location, admin_username, admin_email}` at runtime. The OpenAPI schema marks only `name` required, but the API 400s on missing location or admin fields unless `template_id` is used. CLI: `site create --name X --location <id> --admin-username U --admin-email E [--admin-password ...] [--install-plugins a,b] [--multisite]`. Location ids come from operationId `...sites_locations_get` (they are regions; e.g. 16/20/27 are Asia Pacific). site clone body is all-optional: `site clone <id> [--label L] [--location <id>]`. Both also accept `--data '{...}'` as a full override.
   - Before adding any new POST subcommand, check `has_body` in `bin/rocket_endpoints.json` and read the request schema in `reference/rocket-openapi.yaml`.
 
 ## CLI conventions
@@ -54,21 +54,19 @@ These were discovered during a live smoke test on 2026-05-20-era WordPress 7.0 h
 
 ## Testing
 
-- Unit tests (offline, no network, no creds): `python3 -m unittest tests.test_rocket -v`. 25 tests covering config/auth/http/envelope/task-find/op-constants/subcommands/guards.
+- Unit tests (offline, no network, no creds): `python3 -m unittest tests.test_rocket -v`. 29 tests covering config/auth/http/envelope/task-find/op-constants/subcommands/guards/create-and-wait.
 
 - Live smoke test (needs creds + a real site): `ROCKET_SMOKE_SITE=<id> ./scripts/test-smoke.sh`. Only ever run against a throwaway or staging site, never production.
 
 ## State as of the last session (2026-06-10)
 
-Live-validated against the real API: authentication, all read endpoints, `wpcli` (read), `cache purge` (everything), and `backup create --wait` (full async task-polling). The bundled MCP is configured but its end-to-end connection through the plugin enable flow was NOT separately exercised - only the CLI was live-tested.
+Live-validated against the real API (the full CLI surface): authentication, all read endpoints, `wpcli`, `cache purge`, `backup create`/`restore`/`delete`, `site create`, `site clone`, `staging create`, `staging publish`, and `site delete` - the complete create/clone/staging/restore/delete lifecycle, with `--wait` task polling where applicable. Validated by creating a throwaway site, exercising every op on it (and on its clone), then deleting both. The bundled MCP is configured but its end-to-end connection through the plugin enable flow was NOT separately exercised - only the CLI was live-tested.
 
-NOT yet live-tested (they mutate whole sites, so they were deliberately left alone): `site create`, `site clone`, `staging create`, `staging publish`, `backup restore`. They are coded from the spec and dry-run-correct, but unproven against the live API. The user will provide a dedicated test site for this later. Do not test these against a production site.
+Gotcha confirmed live: the API locks a site while it is being cloned, so a concurrent op such as `staging publish` returns a 400 "site is currently locked" until the clone task finishes. Wait for the clone, then retry.
 
 ## Known gaps and v0.2 TODOs
 
-- Friendly args for `site create` / `site clone` (currently `--data` only) - read CreateSiteRequest / clone request schemas.
 - Ergonomic subcommands for the rest of the full surface currently reachable only via generic `call`: users, SSH keys, FTP, file manager, reporting/WAF, billing, automated/cloud backups, password protection, domains add/edit, SSL upload, plugin/theme install.
-- Live-test the mutating ops on a staging site (staging publish, backup restore, site clone) once a safe target is available.
 - Exercise the bundled MCP through a real plugin enable on a machine that supports it.
 - Distribution: push to a remote repo and publish to the outfit + ai-loadout marketplaces. Scrub docs/ (spec, plan, any local dev notes) from history before any public push.
 

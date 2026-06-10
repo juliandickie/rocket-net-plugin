@@ -18,13 +18,13 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py sites get <site_id>
 
 ## Create a site
 
-Creates asynchronously. Use --wait to poll until the task completes.
+Requires --name, --location (a numeric id), --admin-username, and --admin-email. The new site id is returned immediately; creation finishes in the background, so --wait is not used for create.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py site create --data '{"name":"my-site","location":"us-east"}' --wait
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py site create --name "My Site" --location <id> --admin-username admin --admin-email you@example.com
 ```
 
-Available locations:
+Optional flags: --admin-password (auto-generated if omitted), --install-plugins a,b,c, --multisite, --template-id. List location ids (they are regions, e.g. Asia Pacific, United States, Europe):
 
 ```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.sites_controller.sites_locations_get
@@ -32,10 +32,10 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.sites_controlle
 
 ## Clone a site
 
-Clone is safe (non-destructive) and does not require --yes. It does return an async task.
+Clone is safe (non-destructive) and does not require --yes. It returns an async task; use --wait to poll until the clone finishes. The source site is LOCKED during a clone, so other operations on it return a 400 "site is currently locked" until it completes.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py site clone <site_id> --data '{"name":"my-site-copy"}' --wait
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py site clone <site_id> --label "my-site-copy" --wait
 ```
 
 ## Update site metadata
