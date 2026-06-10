@@ -1,0 +1,2938 @@
+{
+  "base_url": "https://api.rocket.net",
+  "operations": {
+    "app.controllers.access_logs_controller.sites_id_access_logs_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/access_logs",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration",
+        "domain",
+        "search",
+        "ip",
+        "cache_status",
+        "uri",
+        "ray_id",
+        "device_type",
+        "status_code",
+        "per_page",
+        "page"
+      ],
+      "returns_task": false,
+      "summary": "List Access Logs"
+    },
+    "app.controllers.access_logs_controller.sites_id_access_logs_get_deprecated": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/access-logs",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration",
+        "domain",
+        "ip",
+        "cache_status",
+        "uri",
+        "ray_id",
+        "device_type",
+        "status_code",
+        "per_page",
+        "page"
+      ],
+      "returns_task": false,
+      "summary": "[Deprecated] List Access Logs"
+    },
+    "app.controllers.account_controller.account_billing_sso_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/account/billing_sso",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Get a cookie to allow for access to billing data"
+    },
+    "app.controllers.account_controller.account_me_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/account/me",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Get user information"
+    },
+    "app.controllers.account_controller.account_me_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/account/me",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Update user account settings"
+    },
+    "app.controllers.account_controller.account_password_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/account/password",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Set a new password for your account"
+    },
+    "app.controllers.account_controller.account_tasks_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/account/tasks",
+      "path_params": [],
+      "query_params": [
+        "task_id",
+        "task_type",
+        "task_status",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "Get a list of account level tasks"
+    },
+    "app.controllers.account_controller.account_usage_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/account/usage",
+      "path_params": [],
+      "query_params": [
+        "date_from",
+        "date_to"
+      ],
+      "returns_task": false,
+      "summary": "Get unique usage statistics for user account."
+    },
+    "app.controllers.account_controller.get_hosting_plan": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/account/hosting_plan",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Get Current Hosting Plan"
+    },
+    "app.controllers.account_controller.post_hosting_plan": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/account/hosting_plan",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Set Hosting Plan"
+    },
+    "app.controllers.account_controller.post_request_cancel_account": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/account/cancel",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Request that your Rocket.net account be cancelled"
+    },
+    "app.controllers.account_controller.put_hosting_plan": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PUT",
+      "path": "/v1/account/hosting_plan",
+      "path_params": [],
+      "query_params": [
+        "preview"
+      ],
+      "returns_task": false,
+      "summary": "Change Account's Hosting Plan"
+    },
+    "app.controllers.activity_controller.sites_id_activity_disable_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/activity/disable",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Stops events logging."
+    },
+    "app.controllers.activity_controller.sites_id_activity_enable_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/activity/enable",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Starts events logging."
+    },
+    "app.controllers.activity_controller.sites_id_activity_events_event_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/activity/events/{event_id}",
+      "path_params": [
+        "id",
+        "event_id"
+      ],
+      "query_params": [
+        "id",
+        "event_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete event from a site installation."
+    },
+    "app.controllers.activity_controller.sites_id_activity_events_event_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/activity/events/{event_id}",
+      "path_params": [
+        "id",
+        "event_id"
+      ],
+      "query_params": [
+        "id",
+        "event_id"
+      ],
+      "returns_task": false,
+      "summary": "Get event for a site installation with event id."
+    },
+    "app.controllers.activity_controller.sites_id_activity_events_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/activity/events",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "author",
+        "page",
+        "per_page",
+        "date_from",
+        "date_to",
+        "duration",
+        "ip",
+        "event_type",
+        "action",
+        "display_name",
+        "user_email",
+        "user_login",
+        "label"
+      ],
+      "returns_task": false,
+      "summary": "List Activity Events"
+    },
+    "app.controllers.activity_controller.sites_id_activity_events_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/activity/events",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Insert new event into system."
+    },
+    "app.controllers.authentication_controller.login_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/login",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Authenticate user and generate JWT token"
+    },
+    "app.controllers.backups_controller.sites_id_backup_automated_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/backup/automated",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "status",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List automated backups"
+    },
+    "app.controllers.backups_controller.sites_id_backup_automated_restore_id_restore_database_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/backup/automated/{restore_id}/restore/database",
+      "path_params": [
+        "id",
+        "restore_id"
+      ],
+      "query_params": [
+        "id",
+        "restore_id"
+      ],
+      "returns_task": true,
+      "summary": "Restore existing automated restore point database"
+    },
+    "app.controllers.backups_controller.sites_id_backup_automated_restore_id_restore_files_post": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/backup/automated/{restore_id}/restore/files",
+      "path_params": [
+        "id",
+        "restore_id"
+      ],
+      "query_params": [
+        "id",
+        "restore_id"
+      ],
+      "returns_task": true,
+      "summary": "Restore existing automated restore point files"
+    },
+    "app.controllers.backups_controller.sites_id_backup_automated_restore_id_restore_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/backup/automated/{restore_id}/restore",
+      "path_params": [
+        "id",
+        "restore_id"
+      ],
+      "query_params": [
+        "id",
+        "restore_id"
+      ],
+      "returns_task": true,
+      "summary": "Restore existing automated restore point (via background task)"
+    },
+    "app.controllers.backups_controller.sites_id_backup_backup_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/backup/{backup_id}",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete given backup for site from the system."
+    },
+    "app.controllers.backups_controller.sites_id_backup_backup_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/backup/{backup_id}",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id",
+        "token"
+      ],
+      "returns_task": false,
+      "summary": "Download given backup for site"
+    },
+    "app.controllers.backups_controller.sites_id_backup_backup_id_restore_post": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/backup/{backup_id}/restore",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id"
+      ],
+      "returns_task": true,
+      "summary": "Restore a backup for given site (via background task)"
+    },
+    "app.controllers.backups_controller.sites_id_backup_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/backup",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "task_id",
+        "search",
+        "status",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "Get a list of backups for site"
+    },
+    "app.controllers.backups_controller.sites_id_backup_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/backup",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Create a new backup for given site."
+    },
+    "app.controllers.bandwidth_controller.account_bandwidth_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/account/bandwidth",
+      "path_params": [],
+      "query_params": [
+        "date_from",
+        "date_to"
+      ],
+      "returns_task": false,
+      "summary": "Get bandwidth usage statistics for user account."
+    },
+    "app.controllers.bandwidth_controller.sites_id_reporting_bandwidth_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/reporting/bandwidth",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "date_from",
+        "date_to"
+      ],
+      "returns_task": false,
+      "summary": "Get bandwidth usage statistics for given site."
+    },
+    "app.controllers.billing_controller.delete_billing_addresses_address_id": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/billing/addresses/{address_id}",
+      "path_params": [
+        "address_id"
+      ],
+      "query_params": [
+        "address_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete Billing Address"
+    },
+    "app.controllers.billing_controller.delete_billing_payment_methods_method_id": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/billing/payment_methods/{payment_method_id}",
+      "path_params": [
+        "payment_method_id"
+      ],
+      "query_params": [
+        "payment_method_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete Payment Method"
+    },
+    "app.controllers.billing_controller.get_billing_addresses": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/addresses",
+      "path_params": [],
+      "query_params": [
+        "page",
+        "per_page"
+      ],
+      "returns_task": false,
+      "summary": "List Billing Addresses"
+    },
+    "app.controllers.billing_controller.get_billing_addresses_address_id": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/addresses/{address_id}",
+      "path_params": [
+        "address_id"
+      ],
+      "query_params": [
+        "address_id"
+      ],
+      "returns_task": false,
+      "summary": "Get Billing Address"
+    },
+    "app.controllers.billing_controller.get_billing_emails": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/emails",
+      "path_params": [],
+      "query_params": [
+        "page",
+        "per_page"
+      ],
+      "returns_task": false,
+      "summary": "List Billing Emails"
+    },
+    "app.controllers.billing_controller.get_billing_emails_email_id": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/emails/{email_id}",
+      "path_params": [
+        "email_id"
+      ],
+      "query_params": [
+        "email_id"
+      ],
+      "returns_task": false,
+      "summary": "Get Billing Email"
+    },
+    "app.controllers.billing_controller.get_billing_invoices": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/invoices",
+      "path_params": [],
+      "query_params": [
+        "page",
+        "per_page",
+        "search",
+        "sort",
+        "direction",
+        "status"
+      ],
+      "returns_task": false,
+      "summary": "List Invoices"
+    },
+    "app.controllers.billing_controller.get_billing_invoices_invoice_id": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/invoices/{invoice_id}",
+      "path_params": [
+        "invoice_id"
+      ],
+      "query_params": [
+        "invoice_id"
+      ],
+      "returns_task": false,
+      "summary": "Get Invoice"
+    },
+    "app.controllers.billing_controller.get_billing_invoices_invoice_id_pdf": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/invoices/{invoice_id}/pdf",
+      "path_params": [
+        "invoice_id"
+      ],
+      "query_params": [
+        "invoice_id",
+        "token",
+        "embed"
+      ],
+      "returns_task": false,
+      "summary": "Download Invoice PDF"
+    },
+    "app.controllers.billing_controller.get_billing_payment_methods": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/payment_methods",
+      "path_params": [],
+      "query_params": [
+        "page",
+        "per_page",
+        "include_token",
+        "active"
+      ],
+      "returns_task": false,
+      "summary": "List Payment Methods"
+    },
+    "app.controllers.billing_controller.get_billing_payment_methods_method_id": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/payment_methods/{payment_method_id}",
+      "path_params": [
+        "payment_method_id"
+      ],
+      "query_params": [
+        "payment_method_id",
+        "include_token"
+      ],
+      "returns_task": false,
+      "summary": "Get Payment Method"
+    },
+    "app.controllers.billing_controller.get_billing_products": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/billing/products",
+      "path_params": [],
+      "query_params": [
+        "coupon",
+        "product_id",
+        "type"
+      ],
+      "returns_task": false,
+      "summary": "List Available Products"
+    },
+    "app.controllers.billing_controller.patch_billing_addresses_address_id": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/billing/addresses/{address_id}",
+      "path_params": [
+        "address_id"
+      ],
+      "query_params": [
+        "address_id"
+      ],
+      "returns_task": false,
+      "summary": "Update Billing Address"
+    },
+    "app.controllers.billing_controller.patch_billing_invoices_invoice_id_paypal_subscription": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/billing/invoices/{invoice_id}/paypal_subscription",
+      "path_params": [
+        "invoice_id"
+      ],
+      "query_params": [
+        "invoice_id"
+      ],
+      "returns_task": false,
+      "summary": "Update a PayPal Subscription"
+    },
+    "app.controllers.billing_controller.patch_billing_payment_methods_method_id": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/billing/payment_methods/{payment_method_id}",
+      "path_params": [
+        "payment_method_id"
+      ],
+      "query_params": [
+        "payment_method_id"
+      ],
+      "returns_task": false,
+      "summary": "Update Payment Method"
+    },
+    "app.controllers.billing_controller.post_billing_addresses": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/billing/addresses",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "Create Billing Address"
+    },
+    "app.controllers.billing_controller.post_billing_invoices_invoice_id_credit_card_payment": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/billing/invoices/{invoice_id}/credit_card_payment",
+      "path_params": [
+        "invoice_id"
+      ],
+      "query_params": [
+        "invoice_id"
+      ],
+      "returns_task": false,
+      "summary": "Record a Credit Card Payment"
+    },
+    "app.controllers.billing_controller.post_billing_invoices_invoice_id_paypal_subscription": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/billing/invoices/{invoice_id}/paypal_subscription",
+      "path_params": [
+        "invoice_id"
+      ],
+      "query_params": [
+        "invoice_id"
+      ],
+      "returns_task": true,
+      "summary": "Create a PayPal Subscription"
+    },
+    "app.controllers.billing_controller.post_billing_payment_methods": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/billing/payment_methods",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Add Credit Card"
+    },
+    "app.controllers.billing_controller.post_billing_payment_methods_credit_card_setup_intent": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/billing/payment_methods/credit_card_setup_intent",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "Create Credit Card Setup Intent"
+    },
+    "app.controllers.cdn_cache_controller.sites_id_cache_purge_everything_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/cache/purge_everything",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "staging",
+        "domain",
+        "include_additional_domains"
+      ],
+      "returns_task": false,
+      "summary": "Purge all files from single domain from cache on cloudflare"
+    },
+    "app.controllers.cdn_cache_controller.sites_id_cache_purge_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/cache/purge",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "staging",
+        "domain",
+        "include_additional_domains"
+      ],
+      "returns_task": false,
+      "summary": "Purge files from cache on cloudflare"
+    },
+    "app.controllers.cloud_backups_controller.sites_id_cloud_backups_backup_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/cloud_backups/{backup_id}",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete a cloud backup"
+    },
+    "app.controllers.cloud_backups_controller.sites_id_cloud_backups_backup_id_download_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/cloud_backups/{backup_id}/download",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id"
+      ],
+      "returns_task": false,
+      "summary": "Get Cloud Backup Download Link"
+    },
+    "app.controllers.cloud_backups_controller.sites_id_cloud_backups_backup_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/cloud_backups/{backup_id}",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id"
+      ],
+      "returns_task": false,
+      "summary": "Get a cloud backup"
+    },
+    "app.controllers.cloud_backups_controller.sites_id_cloud_backups_backup_id_restore_post": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/cloud_backups/{backup_id}/restore",
+      "path_params": [
+        "id",
+        "backup_id"
+      ],
+      "query_params": [
+        "id",
+        "backup_id"
+      ],
+      "returns_task": true,
+      "summary": "Restore cloud backup / Create new site from backup"
+    },
+    "app.controllers.cloud_backups_controller.sites_id_cloud_backups_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/cloud_backups",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "status",
+        "task_id",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List cloud backups"
+    },
+    "app.controllers.cloud_backups_controller.sites_id_cloud_backups_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/cloud_backups",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Create a new cloud backup"
+    },
+    "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/ssl/certificates",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get a list of details about previously uploaded certificates"
+    },
+    "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/ssl/certificates/{certificate_id}",
+      "path_params": [
+        "id",
+        "certificate_id"
+      ],
+      "query_params": [
+        "id",
+        "certificate_id"
+      ],
+      "returns_task": false,
+      "summary": "Remove custom SSL certificate for this site and associated domains"
+    },
+    "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/ssl/certificates/{certificate_id}",
+      "path_params": [
+        "id",
+        "certificate_id"
+      ],
+      "query_params": [
+        "id",
+        "certificate_id"
+      ],
+      "returns_task": false,
+      "summary": "Details about a previously uploaded custom SSL certificate"
+    },
+    "app.controllers.custom_ssl_controller.sites_id_ssl_certificates_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/ssl/certificates",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Upload a custom SSL certificate for domains of this site"
+    },
+    "app.controllers.customer_site_transfers_controller.customer_site_transfers_accept_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/transfer/{transfer_id}/accept",
+      "path_params": [
+        "id",
+        "transfer_id"
+      ],
+      "query_params": [
+        "id",
+        "transfer_id"
+      ],
+      "returns_task": false,
+      "summary": "Accept a site transfer"
+    },
+    "app.controllers.customer_site_transfers_controller.customer_site_transfers_cancel_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/transfer/{transfer_id}/cancel",
+      "path_params": [
+        "id",
+        "transfer_id"
+      ],
+      "query_params": [
+        "id",
+        "transfer_id"
+      ],
+      "returns_task": false,
+      "summary": "Cancel a site transfer"
+    },
+    "app.controllers.customer_site_transfers_controller.customer_site_transfers_post": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/transfer",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Initiate a site transfer"
+    },
+    "app.controllers.customer_site_transfers_controller.customer_site_transfers_reject_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/transfer/{transfer_id}/reject",
+      "path_params": [
+        "id",
+        "transfer_id"
+      ],
+      "query_params": [
+        "id",
+        "transfer_id"
+      ],
+      "returns_task": false,
+      "summary": "Reject a site transfer"
+    },
+    "app.controllers.domains_controller.sites_id_domains_domain_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/domains/{domain_id}",
+      "path_params": [
+        "id",
+        "domain_id"
+      ],
+      "query_params": [
+        "id",
+        "domain_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete additional domain (domain alias)"
+    },
+    "app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/domains/{domain_id}/edge_settings",
+      "path_params": [
+        "id",
+        "domain_id"
+      ],
+      "query_params": [
+        "id",
+        "domain_id"
+      ],
+      "returns_task": false,
+      "summary": "Get additional domain (domain alias) Edge Settings"
+    },
+    "app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/domains/{domain_id}/edge_settings",
+      "path_params": [
+        "id",
+        "domain_id"
+      ],
+      "query_params": [
+        "id",
+        "domain_id"
+      ],
+      "returns_task": false,
+      "summary": "Update additional domain (domain alias) Edge Settings"
+    },
+    "app.controllers.domains_controller.sites_id_domains_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/domains",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List additional domains (aliases) for the site"
+    },
+    "app.controllers.domains_controller.sites_id_domains_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/domains",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Create additional domain (domain alias)."
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_edge_settings_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/maindomain/edge_settings",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get Maindomain Edge Settings"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_edge_settings_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/maindomain/edge_settings",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Update Maindomain Edge Settings"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/maindomain",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get site main domain info"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/maindomain",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Update maindomain validation method or SSL CA"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/maindomain",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Set a domain for a Site"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_prefix_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/maindomain/prefix",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Change existing prefix for domain"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_put": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PUT",
+      "path": "/v1/sites/{id}/maindomain",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Replace current maindomain with different one"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_recheck_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/maindomain/recheck",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "force"
+      ],
+      "returns_task": false,
+      "summary": "Force validation status recheck"
+    },
+    "app.controllers.domains_controller.sites_id_maindomain_status_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/maindomain/status",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Checks the status of the maindomain, any alternate maindomains, and additional domains"
+    },
+    "app.controllers.files_controller.sites_id_file_manager_files_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/file_manager/files",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "path",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List Site Files"
+    },
+    "app.controllers.files_controller.sites_id_files_chmod_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/files/chmod",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Change file permissions."
+    },
+    "app.controllers.files_controller.sites_id_files_compress_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/files/compress",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Compress files or folders."
+    },
+    "app.controllers.files_controller.sites_id_files_delete": {
+      "destructive": true,
+      "has_body": true,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/files",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete file from a site installation."
+    },
+    "app.controllers.files_controller.sites_id_files_download_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/files/download",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "filename",
+        "directory"
+      ],
+      "returns_task": false,
+      "summary": "Download contents of a given file."
+    },
+    "app.controllers.files_controller.sites_id_files_extract_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/files/extract",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Extract a file."
+    },
+    "app.controllers.files_controller.sites_id_files_folder_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/files/folder",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Create folder in a site installation."
+    },
+    "app.controllers.files_controller.sites_id_files_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/files",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "path"
+      ],
+      "returns_task": false,
+      "summary": "[Deprecated] List files in a site installation."
+    },
+    "app.controllers.files_controller.sites_id_files_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/files",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Upload a file to the site installation."
+    },
+    "app.controllers.files_controller.sites_id_files_put": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PUT",
+      "path": "/v1/sites/{id}/files",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Save contents of a file to the site installation."
+    },
+    "app.controllers.files_controller.sites_id_files_view_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/files/view",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "filename",
+        "directory"
+      ],
+      "returns_task": false,
+      "summary": "View contents of a given file."
+    },
+    "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_delete": {
+      "destructive": true,
+      "has_body": true,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/ftp/accounts",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete ftp account"
+    },
+    "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/ftp/accounts",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "username",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List Ftp Accounts"
+    },
+    "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/ftp/accounts",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "username"
+      ],
+      "returns_task": false,
+      "summary": "Update ftp account"
+    },
+    "app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/ftp/accounts",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Create new ftp account"
+    },
+    "app.controllers.password_protection_controller.get_password_strength": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/password_strength",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Check strength of the given password."
+    },
+    "app.controllers.password_protection_controller.sites_id_password_protection_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/password_protection",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Disable site password protection."
+    },
+    "app.controllers.password_protection_controller.sites_id_password_protection_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/password_protection",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get site password protection status."
+    },
+    "app.controllers.password_protection_controller.sites_id_password_protection_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/password_protection",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Enable site password protection."
+    },
+    "app.controllers.password_protection_controller.sites_id_password_protection_users_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/password_protection/users",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "page",
+        "per_page",
+        "search",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List site password protection users"
+    },
+    "app.controllers.password_protection_controller.sites_id_password_protection_users_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/password_protection/users",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Add site password protection user."
+    },
+    "app.controllers.password_protection_controller.sites_id_password_protection_users_user_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/password_protection/users/{user_id}",
+      "path_params": [
+        "id",
+        "user_id"
+      ],
+      "query_params": [
+        "id",
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Remove site password protection user."
+    },
+    "app.controllers.plugins_controller.sites_id_featured_plugins_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/featured_plugins",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "List available featured plugins"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_delete": {
+      "destructive": true,
+      "has_body": true,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/plugins",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete WordPress plugins from given site"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/plugins",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List installed WordPress plugins on account"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/plugins",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Activate or deactivate WordPress plugins on given site"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/plugins",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Install new WordPress plugins to site"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_put": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PUT",
+      "path": "/v1/sites/{id}/plugins",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Update WordPress plugins on given site"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_rocket_cdn_cache_management_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/plugins/rocket/cdn_cache_management",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Install / re-install the Rocket CDN Cache Management plugin"
+    },
+    "app.controllers.plugins_controller.sites_id_plugins_search_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/plugins/search",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "query",
+        "page",
+        "per_page",
+        "browse"
+      ],
+      "returns_task": false,
+      "summary": "Search for WordPress plugins that can be installed"
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_bandwidth_top_usage_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/bandwidth/top-usage",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Get top usage bandwidth report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_bandwidth_usage_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/bandwidth/usage",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Get usage bandwidth report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_cdn_cache_content_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/cdn/cache-content",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve CDN cache-content report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_cdn_cache_status_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/cdn/cache-status",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve CDN cache-status report"
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_cdn_cache_top_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/cdn/cache-top",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "[Deprecated] Retrieve cdn cache-top report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_cdn_requests_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/cdn/requests",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration",
+        "req_type"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve CDN requests report"
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_visitors_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/visitors",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve cdn visitors report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_waf_eventlist_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/waf/eventlist",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration",
+        "search",
+        "action",
+        "client_ip",
+        "request_path",
+        "country",
+        "asn",
+        "asn_description",
+        "http_method",
+        "http_protocol",
+        "query_string",
+        "ray_id",
+        "user_agent",
+        "per_page",
+        "page"
+      ],
+      "returns_task": false,
+      "summary": "List WAF Events"
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_waf_events_get_deprecated": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/waf/events",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration",
+        "limit",
+        "search",
+        "action",
+        "client_ip",
+        "request_path",
+        "country",
+        "asn",
+        "asn_description",
+        "http_method",
+        "http_protocol",
+        "query_string",
+        "user_agent"
+      ],
+      "returns_task": false,
+      "summary": "[Deprecated]: List WAF Events"
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_waf_events_services_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/waf/events-services",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve WAF events services report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_waf_events_source_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/waf/events-source",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve WAF events source report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_waf_events_time_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/waf/events-time",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve WAF events time report."
+    },
+    "app.controllers.reporting_controller.reporting_sites_id_waf_firewall_events_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/reporting/sites/{id}/waf/firewall-events",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Retrieve WAF firewall events report."
+    },
+    "app.controllers.reporting_controller.sites_id_reporting_bandwidth_usage_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/reporting/bandwidth/usage",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Get usage bandwidth report."
+    },
+    "app.controllers.reporting_controller.sites_id_reporting_cdn_request_volume_by_source_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/reporting/cdn_request_volume_by_source",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "CDN Request Volume by Source"
+    },
+    "app.controllers.reporting_controller.sites_id_reporting_total_requests_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/reporting/total_requests",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "duration"
+      ],
+      "returns_task": false,
+      "summary": "Total requests from all sources"
+    },
+    "app.controllers.shop_shield_controller.sites_id_shopshield_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/shop_shield",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "uri_id",
+        "uri",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List ShopShield URIs for a site"
+    },
+    "app.controllers.shop_shield_controller.sites_id_shopshield_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/shop_shield/{uri_id}",
+      "path_params": [
+        "id",
+        "uri_id"
+      ],
+      "query_params": [
+        "id",
+        "uri_id"
+      ],
+      "returns_task": false,
+      "summary": "Disable ShopShield for a URI"
+    },
+    "app.controllers.shop_shield_controller.sites_id_shopshield_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/shop_shield/{uri_id}",
+      "path_params": [
+        "id",
+        "uri_id"
+      ],
+      "query_params": [
+        "id",
+        "uri_id"
+      ],
+      "returns_task": false,
+      "summary": "Get ShopShield URI Details"
+    },
+    "app.controllers.shop_shield_controller.sites_id_shopshield_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/shop_shield",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Enable ShopShield for a URI"
+    },
+    "app.controllers.site_settings_controller.sites_id_settings_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/settings",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get site settings."
+    },
+    "app.controllers.site_settings_controller.sites_id_settings_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/settings",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Update site settings."
+    },
+    "app.controllers.site_settings_controller.sites_id_settings_schema_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/settings/schema",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get schema of all possible settings for the site."
+    },
+    "app.controllers.site_templates_controller.site_templates_task_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/site_templates",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "Create new site template"
+    },
+    "app.controllers.site_templates_controller.sites_templates_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/templates",
+      "path_params": [],
+      "query_params": [
+        "created_from.site_id",
+        "created_from.domain",
+        "tags",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List Site Templates"
+    },
+    "app.controllers.site_templates_controller.sites_templates_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/templates/{template_id}",
+      "path_params": [
+        "template_id"
+      ],
+      "query_params": [
+        "template_id"
+      ],
+      "returns_task": false,
+      "summary": "Delete Site Templates"
+    },
+    "app.controllers.site_templates_controller.sites_templates_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/templates/{template_id}",
+      "path_params": [
+        "template_id"
+      ],
+      "query_params": [
+        "template_id"
+      ],
+      "returns_task": false,
+      "summary": "Get Site Templates"
+    },
+    "app.controllers.site_templates_controller.sites_templates_id_sites_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/templates/{template_id}/sites",
+      "path_params": [
+        "template_id"
+      ],
+      "query_params": [
+        "template_id"
+      ],
+      "returns_task": true,
+      "summary": "Create new site from a site template"
+    },
+    "app.controllers.site_templates_controller.sites_templates_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/templates",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "[Deprecated]: Create new site template"
+    },
+    "app.controllers.site_users_controller.sites_id_users_accept_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/users/accept",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "token"
+      ],
+      "returns_task": false,
+      "summary": "Accept invite to site."
+    },
+    "app.controllers.site_users_controller.sites_id_users_accept_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/users/accept",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Accept invite to site."
+    },
+    "app.controllers.site_users_controller.sites_id_users_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/users",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List all the site users for a Site"
+    },
+    "app.controllers.site_users_controller.sites_id_users_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/users",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Send invite to site user."
+    },
+    "app.controllers.site_users_controller.sites_id_users_user_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/users/{user_id}",
+      "path_params": [
+        "id",
+        "user_id"
+      ],
+      "query_params": [
+        "id",
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Remove site access for site user."
+    },
+    "app.controllers.site_users_controller.sites_id_users_user_id_reinvite_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/users/{user_id}/reinvite",
+      "path_params": [
+        "id",
+        "user_id"
+      ],
+      "query_params": [
+        "id",
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Send re-invite to site user."
+    },
+    "app.controllers.site_users_controller.sites_users_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/users",
+      "path_params": [],
+      "query_params": [
+        "domain",
+        "search",
+        "page",
+        "per_page",
+        "status",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List all the site for user."
+    },
+    "app.controllers.site_users_controller.sites_users_login_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/users/login",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Login as a site user."
+    },
+    "app.controllers.site_users_controller.sites_users_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/users",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "Create new site user."
+    },
+    "app.controllers.site_users_controller.sites_users_reset_password_post": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/users/reset-password",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Reset password for the site user."
+    },
+    "app.controllers.site_users_controller.sites_users_user_id_password_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/users/{user_id}/password",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": true,
+      "summary": "Create or update password for the site user."
+    },
+    "app.controllers.site_users_controller.sites_users_user_id_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/users/{user_id}",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Update site user."
+    },
+    "app.controllers.sites_controller.sites_all_locations_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/all_locations",
+      "path_params": [],
+      "query_params": [
+        "site_type"
+      ],
+      "returns_task": false,
+      "summary": "List Site locations (including restricted)"
+    },
+    "app.controllers.sites_controller.sites_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites",
+      "path_params": [],
+      "query_params": [
+        "domain",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List sites"
+    },
+    "app.controllers.sites_controller.sites_id_access_token_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/access_token",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Generate token valid for accessing site operations"
+    },
+    "app.controllers.sites_controller.sites_id_clone_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/clone",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Clone a site (via background task)"
+    },
+    "app.controllers.sites_controller.sites_id_credentials_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/credentials",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get password and username for site."
+    },
+    "app.controllers.sites_controller.sites_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete site from system"
+    },
+    "app.controllers.sites_controller.sites_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get information about site from system"
+    },
+    "app.controllers.sites_controller.sites_id_lock_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/lock",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Unlock a site so that modifications can be made again"
+    },
+    "app.controllers.sites_controller.sites_id_lock_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/lock",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Lock a site so that no modifications can be made"
+    },
+    "app.controllers.sites_controller.sites_id_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Update site properties."
+    },
+    "app.controllers.sites_controller.sites_id_pma_login_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/pma/login",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get SSO link for phpMyAdmin account"
+    },
+    "app.controllers.sites_controller.sites_id_staging_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/staging",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete staging site for given site."
+    },
+    "app.controllers.sites_controller.sites_id_staging_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/staging",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Create new staging site for given site (via background task)"
+    },
+    "app.controllers.sites_controller.sites_id_staging_publish_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/staging/publish",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": true,
+      "summary": "Publish staging site as an active site (via background task)"
+    },
+    "app.controllers.sites_controller.sites_id_tasks_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/tasks",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "task_id",
+        "task_type",
+        "task_status",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List Site Tasks"
+    },
+    "app.controllers.sites_controller.sites_id_tasks_task_id_cancel_post": {
+      "destructive": true,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/sites/{id}/tasks/{task_id}/cancel",
+      "path_params": [
+        "id",
+        "task_id"
+      ],
+      "query_params": [
+        "id",
+        "task_id"
+      ],
+      "returns_task": false,
+      "summary": "Mark Site Task as Cancelled"
+    },
+    "app.controllers.sites_controller.sites_id_usage_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/usage",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "date_from",
+        "date_to"
+      ],
+      "returns_task": false,
+      "summary": "Get site usage."
+    },
+    "app.controllers.sites_controller.sites_locations_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/locations",
+      "path_params": [],
+      "query_params": [
+        "site_type"
+      ],
+      "returns_task": false,
+      "summary": "List Site locations"
+    },
+    "app.controllers.sites_controller.sites_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "Create new site"
+    },
+    "app.controllers.ssh_keys_controller.sites_id_ssh_keys_authorize_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/ssh/keys/authorize",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Activate SSH key for given site."
+    },
+    "app.controllers.ssh_keys_controller.sites_id_ssh_keys_deauthorize_post": {
+      "destructive": true,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/ssh/keys/deauthorize",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Deactivate SSH key for given site."
+    },
+    "app.controllers.ssh_keys_controller.sites_id_ssh_keys_delete": {
+      "destructive": true,
+      "has_body": true,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/ssh/keys",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete SSH key for given site."
+    },
+    "app.controllers.ssh_keys_controller.sites_id_ssh_keys_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/ssh/keys",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List SSH keys for given site."
+    },
+    "app.controllers.ssh_keys_controller.sites_id_ssh_keys_name_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/ssh/keys/{name}",
+      "path_params": [
+        "id",
+        "name"
+      ],
+      "query_params": [
+        "id",
+        "name"
+      ],
+      "returns_task": false,
+      "summary": "View SSH key info for given site."
+    },
+    "app.controllers.ssh_keys_controller.sites_id_ssh_keys_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/ssh/keys",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Import an ssh key for a site"
+    },
+    "app.controllers.themes_controller.sites_id_themes_delete": {
+      "destructive": true,
+      "has_body": true,
+      "method": "DELETE",
+      "path": "/v1/sites/{id}/themes",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Delete WordPress theme from site"
+    },
+    "app.controllers.themes_controller.sites_id_themes_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/themes",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List installed Wordpress themes on account"
+    },
+    "app.controllers.themes_controller.sites_id_themes_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/sites/{id}/themes",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Activate or deactivate WordPress themes on given site"
+    },
+    "app.controllers.themes_controller.sites_id_themes_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/themes",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Install new WordPress themes to site"
+    },
+    "app.controllers.themes_controller.sites_id_themes_put": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PUT",
+      "path": "/v1/sites/{id}/themes",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Update WordPress themes on given site"
+    },
+    "app.controllers.themes_controller.sites_id_themes_search_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/themes/search",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "query",
+        "page",
+        "per_page",
+        "browse"
+      ],
+      "returns_task": false,
+      "summary": "Search for WordPress themes that can be installed"
+    },
+    "app.controllers.users_controller.generate_password_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/users/generate_password",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Generate a password that meets strength requirements."
+    },
+    "app.controllers.users_controller.get_password_strength": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/users/password_strength",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": false,
+      "summary": "Check strength of the given password."
+    },
+    "app.controllers.users_controller.users_accept_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/users/accept",
+      "path_params": [],
+      "query_params": [
+        "token"
+      ],
+      "returns_task": false,
+      "summary": "Accept an invitation to help manage a Rocket.net account"
+    },
+    "app.controllers.users_controller.users_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/users",
+      "path_params": [],
+      "query_params": [
+        "search",
+        "page",
+        "per_page",
+        "sort",
+        "direction"
+      ],
+      "returns_task": false,
+      "summary": "List all users in your account"
+    },
+    "app.controllers.users_controller.users_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/users",
+      "path_params": [],
+      "query_params": [],
+      "returns_task": true,
+      "summary": "Create new user who can access your Rocket.net account. An email will be sent for them to set their password."
+    },
+    "app.controllers.users_controller.users_user_id_delete": {
+      "destructive": true,
+      "has_body": false,
+      "method": "DELETE",
+      "path": "/v1/users/{user_id}",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Remove a User from your account"
+    },
+    "app.controllers.users_controller.users_user_id_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/users/{user_id}",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Get information about a specific user in your account."
+    },
+    "app.controllers.users_controller.users_user_id_password_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/users/{user_id}/password",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": true,
+      "summary": "Create first time password for the Account User"
+    },
+    "app.controllers.users_controller.users_user_id_patch": {
+      "destructive": false,
+      "has_body": true,
+      "method": "PATCH",
+      "path": "/v1/users/{user_id}",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Update user"
+    },
+    "app.controllers.users_controller.users_user_id_reinvite_post": {
+      "destructive": false,
+      "has_body": false,
+      "method": "POST",
+      "path": "/v1/users/{user_id}/reinvite",
+      "path_params": [
+        "user_id"
+      ],
+      "query_params": [
+        "user_id"
+      ],
+      "returns_task": false,
+      "summary": "Re-send invite email to User"
+    },
+    "app.controllers.visitors_controller.account_visitors_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/account/visitors",
+      "path_params": [],
+      "query_params": [
+        "date_from",
+        "date_to"
+      ],
+      "returns_task": false,
+      "summary": "Get unique visitors statistics for user account."
+    },
+    "app.controllers.visitors_controller.sites_id_visitors_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/visitors",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id",
+        "date_from",
+        "date_to"
+      ],
+      "returns_task": false,
+      "summary": "Get unique visitors statistics for given site."
+    },
+    "app.controllers.wordpress_controller.sites_id_cli_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/cli",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Execute cli command on wp installation ([Deprecated])"
+    },
+    "app.controllers.wordpress_controller.sites_id_wp_login_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/wp/login",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get SSO link for wordpress account"
+    },
+    "app.controllers.wordpress_controller.sites_id_wp_status_get": {
+      "destructive": false,
+      "has_body": false,
+      "method": "GET",
+      "path": "/v1/sites/{id}/wp/status",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Get Status of WordPress for the site"
+    },
+    "app.controllers.wordpress_controller.sites_id_wpcli_post": {
+      "destructive": false,
+      "has_body": true,
+      "method": "POST",
+      "path": "/v1/sites/{id}/wpcli",
+      "path_params": [
+        "id"
+      ],
+      "query_params": [
+        "id"
+      ],
+      "returns_task": false,
+      "summary": "Execute wp cli command on site."
+    }
+  }
+}

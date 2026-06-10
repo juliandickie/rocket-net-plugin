@@ -1,0 +1,14 @@
+# Secrets and local config (creds live in ~/.config/rocket-net/, never here)
+*.token
+.env
+.env.local
+# Local-only dev notes
+docs/dev/
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+# OS
+.DS_Store
+# Tooling session state
+.omc/

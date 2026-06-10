@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "rocket-net": {
+      "type": "http",
+      "url": "https://mcp.rocket.net/mcp",
+      "headers": {
+        "ROCKETNET_USERNAME": "${user_config.rocketnet_username}",
+        "ROCKETNET_PASSWORD": "${user_config.rocketnet_password}"
+      }
+    }
+  }
+}
