@@ -75,3 +75,17 @@ Gotcha confirmed live: the API locks a site while it is being cloned, so a concu
 ## House style
 
 This repo follows the user's text hygiene: no em or en dashes, no colons in markdown headings (use " - "), straight quotes only. Keep it consistent in any new files.
+
+## wpcli API findings - 2026-07-04 (client incident diagnosis)
+
+Discovered while diagnosing production errors on a client site through the API wpcli channel.
+
+- The API maintains a command blocklist. `wp eval` (and by implication eval-file) returns 400 "sorry, the wp command is not available via API. If you need to use this command, you can SSH into your account and run WP CLI directly". Standard reads (plugin list, option get/pluck/patch, config list, theme list, db query) all pass.
+
+- Quote flattening. cmd_wpcli joins wp_args with spaces into one command string and the server re-splits it, so shell quoting from the local side is lost. To pass a quoted argument (eg SQL), embed literal double quotes that survive the local shell: `wpcli <site_id> -- db query "\"SELECT ... WHERE x='y'\""`. Without this, `db query` errors with "Too many positional arguments".
+
+- Response pollution. The `data` payload inside result.response is a JSON-encoded string that PREPENDS any PHP notices emitted during WP boot (eg _load_textdomain_just_in_time notices) before the actual command output. Strip notice lines before parsing. result.response itself is a JSON string inside the JSON envelope - double decode.
+
+- `credentials <site>` returns plaintext SFTP username and password. In Claude Code auto mode the permission classifier blocks materializing these (printing or writing to a file), so file-level work (mu-plugins, wp-config edits) needs an interactively-approved session or manual upload via the Rocket.net dashboard File Manager. Plan workflows accordingly.
+
+- `db query` permits writes as well as reads (used successfully for option-free schema checks; treat with the same care as any production SQL).

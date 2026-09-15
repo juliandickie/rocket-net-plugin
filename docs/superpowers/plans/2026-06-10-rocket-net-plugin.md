@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
 - [ ] **Step 2: Run the build**
 
-Run: `cd /Users/juliandickie/code/rocket-net-plugin && python3 scripts/build_endpoints.py`
+Run: `cd <plugin-root> && python3 scripts/build_endpoints.py`
 Expected: `Wrote 198 operations to .../bin/rocket_endpoints.json` (or close to 198).
 
 - [ ] **Step 3: Sanity check the output**

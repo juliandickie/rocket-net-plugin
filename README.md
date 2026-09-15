@@ -2,7 +2,7 @@
 
 A Claude Code plugin to manage Rocket.net WordPress hosting two ways - conversationally through Rocket.net's bundled MCP server, and deterministically through a zero-dependency Python CLI. Skills and commands add the workflow knowledge on top.
 
-Status - v0.1.0. Build complete and validated (29 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is configured but not yet exercised through a plugin enable.
+Status - v0.1.0. Build complete and validated (34 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is configured but not yet exercised through a plugin enable.
 
 Continuing development, or running on another machine? Read DEVELOPMENT.md first - it captures the live-API gotchas (Cloudflare user-agent, response envelope, task polling, which POST endpoints need bodies) and machine setup.
 

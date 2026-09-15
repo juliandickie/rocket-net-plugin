@@ -1,4 +1,4 @@
-# API channel gotchas - 2026-09-02 (academy performance engagement, sites 219306 and 330243)
+# API channel gotchas - 2026-09-02 (client performance engagement, one production site and one staging site)
 
 Additive notes from two days of heavy CLI use against production and staging. All confirmed live.
 
