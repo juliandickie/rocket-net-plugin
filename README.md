@@ -26,6 +26,61 @@ Two independent credential paths.
 
 Note - Rocket.net sits behind Cloudflare, which blocks the default Python user-agent (error 1010). The CLI sends its own `rocket-net-cli/0.1.0` User-Agent so requests pass; override it with the `ROCKET_USER_AGENT` env var if needed. Two-factor authentication on your account does not block the API login (2FA gates only the web dashboard).
 
+## Team setup guide
+
+Read this if someone has asked you to install the plugin so you can work on the team's Rocket.net sites.
+
+### Which credentials it uses
+
+The plugin logs in with the same email and password you use at the Rocket.net web dashboard. There is no separate API key to create or copy from a settings page. Rocket.net has no permanent API keys at all; the API issues a 7-day token from a login call, and the plugin mints and refreshes that token on its own, which is why it asks for your login rather than a token.
+
+Two things to know about that login.
+
+- Two-factor authentication does not get in the way. If your account has 2FA on, the web dashboard asks for the code but the plugin does not, because the API login does not enforce it.
+- Changing your dashboard password breaks the plugin until you update it in both places described below, the keychain entry for the MCP and the config file for the CLI.
+
+### Get a login
+
+Ask the account owner to invite you as a user on the Rocket.net account, or to the specific sites you work on, from the dashboard. Use your own login where you can. The plugin acts with whatever permissions your user has, so a collaborator with a limited role gets a limited plugin. A shared owner login gives everyone full account power, including site delete, and the only brake at that point is the `--yes` guard on destructive commands.
+
+### Install the plugin
+
+Add the marketplace, then install.
+
+```bash
+claude plugin marketplace add juliandickie/outfit
+```
+
+```bash
+claude plugin install rocket-net@outfit
+```
+
+When Claude Code prompts for your Rocket.net email and password, enter your dashboard login. They are stored in your operating system keychain, never in a file. That covers the conversational path (the bundled MCP server).
+
+### Set up the CLI (optional)
+
+If you will run scripted or bulk work, or anything that has to wait on a long task, the CLI needs its own copy of the login in a config file. Replace the two values and run:
+
+```bash
+mkdir -p ~/.config/rocket-net && printf '{"username":"you@example.com","password":"YOUR_PASSWORD","base_url":"https://api.rocket.net"}\n' > ~/.config/rocket-net/config.json && chmod 600 ~/.config/rocket-net/config.json
+```
+
+The chmod step matters. It makes the file readable only by your user.
+
+### Check it works
+
+List the sites your login can see. This is read-only.
+
+```bash
+python3 ~/.claude/plugins/cache/outfit/rocket-net/*/bin/rocket.py sites list
+```
+
+If it returns your sites, you are done. If it returns a 401, the email or password is wrong. If it returns a Cloudflare error 1010, something has overridden the CLI's User-Agent; unset `ROCKET_USER_AGENT` and try again.
+
+### When your password changes
+
+Update the config file above with the new password, then re-enter it for the MCP by disabling and re-enabling the plugin so Claude Code prompts again.
+
 ## The two tools, when to use each
 
 | Task | Use |
