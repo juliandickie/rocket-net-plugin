@@ -67,10 +67,9 @@ Gotcha confirmed live: the API locks a site while it is being cloned, so a concu
 
 ## Known gaps and v0.2 TODOs
 
+Done 2026-09-16 - published to github.com/juliandickie/rocket-net-plugin and listed in outfit + ai-loadout (v0.1.0), bundled MCP verified end to end and auth fixed (v0.1.1), and the four long-tail skills (users-access, reporting-waf, plugins-themes, domains-ssl) now lead with the ergonomic subcommands; generic `call` remains only for endpoints without one (reinvite, account users, edge settings, DNS recheck, featured plugins, update-all, CDN and WAF breakdowns). The hosted MCP carries endpoints the public OpenAPI spec does not (e.g. waf/events-stats); public spec re-fetched 2026-09-16 and is byte-identical to reference/rocket-openapi.yaml, so no map refresh is due.
+
 - Most of the full surface now has ergonomic subcommands (users, ssh, ftp, settings, reporting, pwprotect, credentials, access-logs, maindomain, plus install/update/delete for plugins/themes/domains/ssl/backup). A few niche endpoints remain generic-`call`-only: file manager, domain and maindomain edge_settings, activity log, automated/cloud backup restore variants, billing, WAF detail reports, shop_shield. Wrap them if a workflow needs them.
-- Refresh the skills (rocket-users-access, rocket-reporting-waf, rocket-plugins-themes, rocket-domains-ssl) to use the new ergonomic subcommands instead of generic `call` (they still work via `call`, just verbose).
-- Exercise the bundled MCP through a real plugin enable on a machine that supports it.
-- Distribution: push to a remote repo and publish to the outfit + ai-loadout marketplaces. Scrub docs/ (spec, plan, any local dev notes) from history before any public push.
 
 ## House style
 

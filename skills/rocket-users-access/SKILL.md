@@ -5,35 +5,37 @@ description: "Manage site users, roles, SSH keys, FTP accounts, and password pro
 
 # Rocket.net users and access
 
-Covers site collaborators, SSH keys, FTP accounts, and HTTP password protection.
+Covers site collaborators, SSH keys, FTP accounts, and HTTP password protection. Every operation below has an ergonomic subcommand; the generic `call` form is listed only for the few endpoints without one. Global flags (`--json`, `--yes`) go AFTER the subcommand.
 
 ## Site users (collaborators)
 
 List users on a site:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.site_users_controller.sites_id_users_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py users list <site_id>
 ```
 
-Invite a user to a site:
+Invite a user to a site (the API takes a display name and an email):
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.site_users_controller.sites_id_users_post --param id=<site_id> --data '{"email":"colleague@example.com","role":"editor"}'
-```
-
-Reinvite a user:
-
-```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.site_users_controller.sites_id_users_user_id_reinvite_post --param id=<site_id> --param user_id=<user_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py users add <site_id> --name "Colleague Name" --email colleague@example.com
 ```
 
 Remove a user from a site - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.site_users_controller.sites_id_users_user_id_delete --param id=<site_id> --param user_id=<user_id> --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py users remove <site_id> <user_id> --yes
+```
+
+Reinvite a site user (no subcommand, generic call):
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.site_users_controller.sites_id_users_user_id_reinvite_post --param id=<site_id> --param user_id=<user_id>
 ```
 
 ## Account-level users
+
+No subcommands for these; use generic call.
 
 List all users in the account:
 
@@ -58,31 +60,32 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.users_controlle
 List SSH keys on a site:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ssh_keys_controller.sites_id_ssh_keys_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssh list <site_id>
 ```
 
-Add an SSH key:
+Add an SSH key, from a file or inline:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ssh_keys_controller.sites_id_ssh_keys_post --param id=<site_id> --data '{"name":"my-key","public_key":"ssh-rsa AAAA..."}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssh add <site_id> --name my-key --key-file ~/.ssh/id_ed25519.pub
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssh add <site_id> --name my-key --key "ssh-ed25519 AAAA..." [--passphrase ...]
 ```
 
 Authorize an SSH key:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ssh_keys_controller.sites_id_ssh_keys_authorize_post --param id=<site_id> --data '{"name":"my-key"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssh authorize <site_id> --name my-key
 ```
 
 Deauthorize an SSH key - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ssh_keys_controller.sites_id_ssh_keys_deauthorize_post --param id=<site_id> --data '{"name":"my-key"}' --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssh deauthorize <site_id> --name my-key --yes
 ```
 
-Delete all SSH keys - requires --yes:
+Remove an SSH key - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ssh_keys_controller.sites_id_ssh_keys_delete --param id=<site_id> --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssh remove <site_id> --name my-key --yes
 ```
 
 ## FTP accounts
@@ -90,65 +93,73 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ssh_keys_contro
 List FTP accounts:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ftp list <site_id>
 ```
 
-Create an FTP account:
+Create an FTP account. The API requires ALL five fields:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_post --param id=<site_id> --data '{"username":"ftpuser","password":"...","path":"/"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ftp add <site_id> --username ftpuser --password '...' --homedir / --quota 1024 --domain example.com
 ```
 
-Update FTP account:
+Update an FTP account (any of password, quota, homedir):
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_patch --param id=<site_id> --data '{"username":"ftpuser","password":"newpass"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ftp update <site_id> --password 'newpass' --quota 2048
 ```
 
-Delete FTP account - requires --yes:
+Delete an FTP account - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.ftp_accounts_controller.sites_id_ftp_accounts_delete --param id=<site_id> --data '{"username":"ftpuser"}' --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ftp remove <site_id> --username ftpuser --yes
+```
+
+## SFTP and SSH credentials
+
+The site's own SFTP username and password (returned in plaintext, treat accordingly):
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py credentials <site_id>
 ```
 
 ## Password protection
 
-Get current password protection state:
+Get current state:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.password_protection_controller.sites_id_password_protection_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py pwprotect status <site_id>
 ```
 
-Enable password protection:
+Enable protection:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.password_protection_controller.sites_id_password_protection_post --param id=<site_id> --data '{"enabled":true}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py pwprotect enable <site_id>
 ```
 
-List protected users:
+List protection users:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.password_protection_controller.sites_id_password_protection_users_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py pwprotect users <site_id>
 ```
 
-Add a protected user:
+Add a protection user:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.password_protection_controller.sites_id_password_protection_users_post --param id=<site_id> --data '{"username":"visitor","password":"..."}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py pwprotect add-user <site_id> --username visitor --password '...'
 ```
 
-Remove a protected user - requires --yes:
+Remove a protection user - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.password_protection_controller.sites_id_password_protection_users_user_id_delete --param id=<site_id> --param user_id=<user_id> --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py pwprotect remove-user <site_id> <user_id> --yes
 ```
 
-Disable password protection - requires --yes:
+Disable protection - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.password_protection_controller.sites_id_password_protection_delete --param id=<site_id> --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py pwprotect disable <site_id> --yes
 ```
 
 ## Safety summary
 
-List and invite: safe. Delete user, deauthorize SSH, delete FTP, disable password protection: all require --yes. Read before revoking access.
+List, add, invite, authorize, enable: no confirmation. Remove user, remove or deauthorize SSH key, remove FTP account, remove protection user, disable protection: all require --yes. Read before revoking access.

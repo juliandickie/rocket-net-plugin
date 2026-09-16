@@ -5,107 +5,92 @@ description: "Manage domains, edge settings, and SSL certificates on Rocket.net 
 
 # Rocket.net domains and SSL
 
-Covers custom domains, the main domain, edge (CDN/proxy) settings, and SSL certificates.
+Covers custom domains, the main domain, edge (CDN and proxy) settings, and SSL certificates. Domains, main domain reads, and SSL have subcommands; edge settings and the DNS recheck stay on generic `call`. Global flags (`--json`, `--yes`) go AFTER the subcommand.
 
-## Read current domains
+## Domains
+
+List domains on a site:
 
 ```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains list <site_id>
 ```
 
-Or via generic call:
+Add a custom domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains add <site_id> --domain example.com
 ```
 
-## Get main domain
+Remove a domain - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains remove <site_id> <domain_id> --yes
 ```
 
-## Add a custom domain
+## Main domain
+
+Get the primary domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_post --param id=<site_id> --data '{"domain":"example.com"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py maindomain get <site_id>
 ```
 
-## Check main domain DNS status
+DNS status of the primary domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_status_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py maindomain status <site_id>
+```
+
+Force a DNS recheck (generic call):
+
+```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_recheck_get --param id=<site_id>
 ```
 
-## Edge settings
+## Edge settings (generic call)
 
-Edge settings control CDN and proxy behaviour per domain.
+Edge settings control CDN and proxy behaviour per domain. Read before patching; changes affect live traffic.
 
-Read edge settings for main domain:
+Main domain:
 
 ```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_edge_settings_get --param id=<site_id>
-```
-
-Update edge settings for main domain:
-
-```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_edge_settings_patch --param id=<site_id> --data '{"ssl_mode":"full"}'
 ```
 
-Read edge settings for a specific domain:
+A specific additional domain:
 
 ```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_get --param id=<site_id> --param domain_id=<domain_id>
-```
-
-Update edge settings for a specific domain:
-
-```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_patch --param id=<site_id> --param domain_id=<domain_id> --data '{"ssl_mode":"full"}'
-```
-
-## Delete a domain
-
-Requires --yes.
-
-```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_domain_id_delete --param id=<site_id> --param domain_id=<domain_id> --yes
 ```
 
 ## SSL certificates
 
-List certificates:
+List certificates (returns an empty list when the site uses only the platform certificate):
 
 ```
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl list <site_id>
 ```
 
-Or:
+Get one certificate:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.custom_ssl_controller.sites_id_ssl_certificates_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl get <site_id> <certificate_id>
 ```
 
-Get a specific certificate:
+Upload a custom certificate. Domains are comma-separated; certificate and key are paths to PEM files, read locally and sent in the body:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.custom_ssl_controller.sites_id_ssl_certificates_id_get --param id=<site_id> --param certificate_id=<certificate_id>
-```
-
-Upload a custom SSL certificate:
-
-```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.custom_ssl_controller.sites_id_ssl_certificates_post --param id=<site_id> --data '{"certificate":"...","private_key":"..."}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl upload <site_id> --domains example.com,www.example.com --certificate-file ./cert.pem --key-file ./key.pem
 ```
 
 Delete a certificate - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.custom_ssl_controller.sites_id_ssl_certificates_id_delete --param id=<site_id> --param certificate_id=<certificate_id> --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl delete <site_id> <certificate_id> --yes
 ```
 
 ## Safety summary
 
-Reads: safe. Domain/cert deletes: require --yes. Edge setting changes: non-destructive but affect live traffic - read before patching.
+Reads: safe. Domain and certificate deletes: require --yes. Edge setting changes and certificate uploads: non-destructive but affect live traffic, read before changing.

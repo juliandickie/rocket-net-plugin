@@ -5,7 +5,9 @@ description: "Install, search, and update WordPress plugins and themes via the R
 
 # WordPress plugins and themes on Rocket.net
 
-Manage plugins and themes through the Rocket.net API. This is the hosting-platform layer; for WP-CLI-level operations see rocket-wp-cli.
+Manage plugins and themes through the Rocket.net API. This is the hosting-platform layer; for WP-CLI-level operations see rocket-wp-cli. Every operation has a subcommand except the two noted at the end. Global flags (`--json`, `--yes`) go AFTER the subcommand.
+
+Slugs for install and delete are a comma-separated string, because that is what the API expects (not a JSON array).
 
 ## Plugins
 
@@ -15,52 +17,40 @@ List installed plugins:
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins list <site_id>
 ```
 
-Or:
+Search the WordPress plugin directory:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_get --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins search <site_id> --query woocommerce
 ```
 
-Search the plugin directory:
+Install one or more plugins, optionally activating:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_search_get --param id=<site_id> --param search=<query>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins install <site_id> --plugins woocommerce,wordfence --activate
 ```
 
-List featured plugins:
+Install from a custom zip URL:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_featured_plugins_get --param id=<site_id>
-```
-
-Install a plugin:
-
-```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_post --param id=<site_id> --data '{"slug":"woocommerce"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins install <site_id> --plugins my-plugin --custom-url https://example.com/my-plugin.zip
 ```
 
 Update a plugin:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_patch --param id=<site_id> --data '{"slug":"woocommerce"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins update <site_id> --plugin woocommerce
 ```
 
-Update all plugins (PUT):
+Activate or deactivate a plugin:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_put --param id=<site_id>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins set-status <site_id> --plugin woocommerce --status inactive
 ```
 
-Delete a plugin - requires --yes:
+Delete plugins - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_delete --param id=<site_id> --data '{"slug":"old-plugin"}' --yes
-```
-
-## Rocket CDN cache management plugin settings
-
-```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_rocket_cdn_cache_management_post --param id=<site_id> --data '{}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py plugins delete <site_id> --plugins old-plugin --yes
 ```
 
 ## Themes
@@ -71,42 +61,57 @@ List installed themes:
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py themes list <site_id>
 ```
 
-Or:
-
-```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.themes_controller.sites_id_themes_get --param id=<site_id>
-```
-
 Search the theme directory:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.themes_controller.sites_id_themes_search_get --param id=<site_id> --param search=<query>
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py themes search <site_id> --query astra
 ```
 
-Install a theme:
+Install one or more themes, optionally activating:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.themes_controller.sites_id_themes_post --param id=<site_id> --data '{"slug":"twentytwentyfive"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py themes install <site_id> --themes twentytwentyfive --activate
 ```
 
 Update a theme:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.themes_controller.sites_id_themes_patch --param id=<site_id> --data '{"slug":"twentytwentyfive"}'
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py themes update <site_id> --theme twentytwentyfive
 ```
 
-Update all themes (PUT):
+Activate a theme:
 
 ```
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py themes set-status <site_id> --theme twentytwentyfive --status active
+```
+
+Delete themes - requires --yes:
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py themes delete <site_id> --themes old-theme --yes
+```
+
+## Without a subcommand (generic call)
+
+Featured plugins list:
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_featured_plugins_get --param id=<site_id>
+```
+
+Update ALL plugins or ALL themes in one call:
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_put --param id=<site_id>
 python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.themes_controller.sites_id_themes_put --param id=<site_id>
 ```
 
-Delete a theme - requires --yes:
+Rocket CDN cache management plugin settings:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.themes_controller.sites_id_themes_delete --param id=<site_id> --data '{"slug":"old-theme"}' --yes
+python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_rocket_cdn_cache_management_post --param id=<site_id> --data '{}'
 ```
 
 ## Safety summary
 
-List and search: safe. Install and update: non-destructive. Delete plugin/theme: requires --yes. Always list before deleting to confirm the slug.
+List and search: safe. Install, update, set-status: non-destructive but change the live site. Delete: requires --yes. Always list before deleting to confirm the slug.
