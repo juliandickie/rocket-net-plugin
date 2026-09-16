@@ -2,25 +2,19 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "rocket-net",
   "displayName": "Rocket.net Hosting",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Manage Rocket.net WordPress hosting - site lifecycle, staging and deploys, WP-CLI, backups, and more.",
-  "author": { "name": "Pro Marketing", "url": "https://promarketing.co" },
+  "author": {
+    "name": "Pro Marketing",
+    "url": "https://promarketing.co"
+  },
   "license": "MIT",
-  "keywords": ["rocket.net", "wordpress", "hosting", "wp-cli", "deployment"],
-  "defaultEnabled": false,
-  "userConfig": {
-    "rocketnet_username": {
-      "type": "string",
-      "title": "Rocket.net email",
-      "description": "Email for your Rocket.net account. Used by the bundled MCP to mint and refresh API tokens.",
-      "required": true
-    },
-    "rocketnet_password": {
-      "type": "string",
-      "title": "Rocket.net password",
-      "description": "Password for your Rocket.net account. Stored in your OS keychain, never written to a file.",
-      "sensitive": true,
-      "required": true
-    }
-  }
+  "keywords": [
+    "rocket.net",
+    "wordpress",
+    "hosting",
+    "wp-cli",
+    "deployment"
+  ],
+  "defaultEnabled": false
 }

@@ -2,7 +2,7 @@
 
 A Claude Code plugin to manage Rocket.net WordPress hosting two ways - conversationally through Rocket.net's bundled MCP server, and deterministically through a zero-dependency Python CLI. Skills and commands add the workflow knowledge on top.
 
-Status - v0.1.0. Build complete and validated (34 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is configured but not yet exercised through a plugin enable.
+Status - v0.1.1. Build complete and validated (34 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is live-verified through Claude Code's own client (headersHelper ran, Bearer accepted, tool calls returned real data).
 
 Continuing development, or running on another machine? Read DEVELOPMENT.md first - it captures the live-API gotchas (Cloudflare user-agent, response envelope, task polling, which POST endpoints need bodies) and machine setup.
 
@@ -18,11 +18,11 @@ This plugin manages the Rocket.net HOSTING platform. It is not a WordPress conte
 
 ## Credentials
 
-Two independent credential paths.
+One credential file feeds both tools.
 
 - CLI - create `~/.config/rocket-net/config.json` (chmod 600) with either Rocket.net `username` and `password` (recommended, the CLI auto-mints and refreshes the token) or a manual `api_token`. See `.env.example`. Note - Rocket.net has no permanent API key; tokens are JWTs that expire after 7 days, which is why username and password is the low-maintenance choice.
 
-- MCP - when you enable the plugin, Claude Code prompts for your Rocket.net email and password and stores them in your OS keychain (never in a file). Rocket.net's MCP refreshes its own token.
+- MCP - the bundled server needs an `Authorization: Bearer <JWT>` header on every call. The plugin supplies it through Claude Code's `headersHelper`, which runs `rocket.py mcp-headers` on each connection (and again after any 401). That command reads the SAME config file as the CLI, so there is one credential store, and it refreshes the token when under 24 hours remain.
 
 Note - Rocket.net sits behind Cloudflare, which blocks the default Python user-agent (error 1010). The CLI sends its own `rocket-net-cli/0.1.0` User-Agent so requests pass; override it with the `ROCKET_USER_AGENT` env var if needed. Two-factor authentication on your account does not block the API login (2FA gates only the web dashboard).
 
@@ -37,7 +37,7 @@ The plugin logs in with the same email and password you use at the Rocket.net we
 Two things to know about that login.
 
 - Two-factor authentication does not get in the way. If your account has 2FA on, the web dashboard asks for the code but the plugin does not, because the API login does not enforce it.
-- Changing your dashboard password breaks the plugin until you update it in both places described below, the keychain entry for the MCP and the config file for the CLI.
+- Changing your dashboard password breaks the plugin until you update the config file described below. Both the CLI and the bundled MCP read that one file.
 
 ### Get a login
 
@@ -55,17 +55,17 @@ claude plugin marketplace add juliandickie/outfit
 claude plugin install rocket-net@outfit
 ```
 
-When Claude Code prompts for your Rocket.net email and password, enter your dashboard login. They are stored in your operating system keychain, never in a file. That covers the conversational path (the bundled MCP server).
+Nothing prompts for a login. Both the bundled MCP server and the CLI read the config file created in the next step, so that step is required.
 
-### Set up the CLI (optional)
+### Create the config file (required)
 
-If you will run scripted or bulk work, or anything that has to wait on a long task, the CLI needs its own copy of the login in a config file. Replace the two values and run:
+Replace the two values and run:
 
 ```bash
 mkdir -p ~/.config/rocket-net && printf '{"username":"you@example.com","password":"YOUR_PASSWORD","base_url":"https://api.rocket.net"}\n' > ~/.config/rocket-net/config.json && chmod 600 ~/.config/rocket-net/config.json
 ```
 
-The chmod step matters. It makes the file readable only by your user.
+The chmod step matters. It makes the file readable only by your user. Claude Code mints a 7-day API token from this login when it connects the MCP server, and the CLI does the same on its first call. The token is cached at `~/.config/rocket-net/.token`, also chmod 600.
 
 ### Check it works
 
@@ -79,7 +79,7 @@ If it returns your sites, you are done. If it returns a 401, the email or passwo
 
 ### When your password changes
 
-Update the config file above with the new password, then re-enter it for the MCP by disabling and re-enabling the plugin so Claude Code prompts again.
+Update the config file above with the new password and delete `~/.config/rocket-net/.token`. The next MCP connection or CLI call logs in again.
 
 ## The two tools, when to use each
 
@@ -151,7 +151,7 @@ Then `/reload-plugins` to hot-reload after changes. Validate with `claude plugin
 ## Layout
 
 ```
-.claude-plugin/plugin.json   manifest (userConfig for MCP creds, defaultEnabled false)
+.claude-plugin/plugin.json   manifest (defaultEnabled false)
 .mcp.json                    bundled Rocket.net remote MCP
 bin/rocket.py                the CLI engine
 bin/rocket_endpoints.json    generated operationId map

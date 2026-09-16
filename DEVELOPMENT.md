@@ -6,7 +6,7 @@ Context for any future Claude Code session continuing this plugin, including on 
 
 A Claude Code plugin to manage Rocket.net WordPress hosting. Hybrid architecture, three layers:
 
-1. Bundled Rocket.net remote MCP (`.mcp.json`, points at `https://mcp.rocket.net/mcp`, auth via plugin `userConfig` stored in the OS keychain). For conversational actions.
+1. Bundled Rocket.net remote MCP (`.mcp.json`, points at `https://mcp.rocket.net/mcp`, auth via `headersHelper` running `rocket.py mcp-headers`, which prints an Authorization Bearer header from the CLI's config file and token cache). For conversational actions.
 
 2. A zero-dependency Python stdlib CLI at `bin/rocket.py`. The deterministic engine. Reaches all 198 API operations via a generic `call <operationId>` plus ergonomic subcommands. This is where almost all the logic lives.
 
@@ -89,3 +89,11 @@ Discovered while diagnosing production errors on a client site through the API w
 - `credentials <site>` returns plaintext SFTP username and password. In Claude Code auto mode the permission classifier blocks materializing these (printing or writing to a file), so file-level work (mu-plugins, wp-config edits) needs an interactively-approved session or manual upload via the Rocket.net dashboard File Manager. Plan workflows accordingly.
 
 - `db query` permits writes as well as reads (used successfully for option-free schema checks; treat with the same care as any production SQL).
+
+## Bundled MCP auth contract - verified 2026-09-16
+
+The hosted server at mcp.rocket.net ignores custom credential headers. Its own initialize instructions say - HTTP (Streamable) needs `Authorization: Bearer <JWT>` on each POST, headers apply per tool call; local stdio uses `ROCKETNET_API_TOKEN`. The original `.mcp.json` sent `ROCKETNET_USERNAME` and `ROCKETNET_PASSWORD` headers from `userConfig`; those never reached the server (its error echoes the header names it received and ours were absent) and every tool call failed with "Missing Authorization header with Bearer token". The anonymous handshake and tools/list succeed, so "Connected" in `claude mcp list` proves nothing about auth.
+
+Fix - `headersHelper: python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py mcp-headers --json`. Constraints that shaped it - a plugin headersHelper cannot reference `${user_config.*}` (Claude Code reports the server misconfigured), `${CLAUDE_PLUGIN_ROOT}` does substitute, and env vars with TOKEN, SECRET, PASSWORD, KEY, or AUTH in the name are stripped from the helper's environment, so the helper must read the config file rather than env. `userConfig` was removed from the manifest as a result.
+
+Verification - registered the server at local scope with a logging wrapper and drove it with a child `claude -p` (no Bash) restricted to `mcp__rocket-net-e2e__get_v1_sites`. The helper ran three times (connect plus reconnects) with `CLAUDE_CODE_MCP_SERVER_NAME` set and no password env present, and the tool returned the real site list. `claude mcp list` alone never invokes the helper, and an untrusted workspace refuses to run it at all. Wrong tokens return a clean 401 through the tool result.

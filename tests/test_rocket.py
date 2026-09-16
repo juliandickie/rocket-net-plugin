@@ -70,6 +70,25 @@ class TestAuth(unittest.TestCase):
         with mock.patch.dict(os.environ, {"ROCKET_API_TOKEN": "envtok"}):
             self.assertEqual(self.rocket.get_token({}, cache_path="/nonexistent"), "envtok")
 
+    def test_mcp_headers_returns_bearer_from_cached_token(self):
+        with mock.patch.object(self.rocket, "get_token", return_value="eyJ.cached.tok") as gt, \
+             mock.patch.object(self.rocket, "jwt_exp", return_value=int(__import__("time").time()) + 6 * 86400):
+            out = self.rocket.cmd_mcp_headers(None, {}, None)
+        self.assertEqual(out, {"Authorization": "Bearer eyJ.cached.tok"})
+        gt.assert_called_once()
+
+    def test_mcp_headers_forces_refresh_when_under_24h(self):
+        calls = []
+        def fake_get_token(cfg, cache_path=None, force=False):
+            calls.append(force); return "fresh.tok" if force else "stale.tok"
+        with mock.patch.object(self.rocket, "get_token", side_effect=fake_get_token), \
+             mock.patch.object(self.rocket, "jwt_exp", return_value=int(__import__("time").time()) + 3600), \
+             mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("ROCKET_API_TOKEN", None)
+            out = self.rocket.cmd_mcp_headers(None, {}, None)
+        self.assertEqual(out, {"Authorization": "Bearer fresh.tok"})
+        self.assertEqual(calls, [False, True])
+
     def test_get_token_logs_in_when_needed(self):
         cfg = {"username": "u", "password": "p", "base_url": "https://api.rocket.net"}
         with mock.patch.object(self.rocket, "http_request", return_value={"token": "fresh"}) as hr, \

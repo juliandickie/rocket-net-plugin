@@ -3,10 +3,7 @@
     "rocket-net": {
       "type": "http",
       "url": "https://mcp.rocket.net/mcp",
-      "headers": {
-        "ROCKETNET_USERNAME": "${user_config.rocketnet_username}",
-        "ROCKETNET_PASSWORD": "${user_config.rocketnet_password}"
-      }
+      "headersHelper": "python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py mcp-headers --json"
     }
   }
 }

@@ -9,7 +9,7 @@ TOKEN_CACHE = os.path.expanduser("~/.config/rocket-net/.token")
 DEFAULT_BASE = "https://api.rocket.net"
 # Rocket.net is behind Cloudflare, which 403-bans the default Python-urllib UA (CF error 1010).
 # Any non-default User-Agent passes; use an honest one. Overridable via env for flexibility.
-USER_AGENT = os.environ.get("ROCKET_USER_AGENT", "rocket-net-cli/0.1.0")
+USER_AGENT = os.environ.get("ROCKET_USER_AGENT", "rocket-net-cli/0.1.1")
 
 # --- Config ---
 
@@ -389,6 +389,10 @@ def build_parser():
     add(acsub, "me", help="get current account info").set_defaults(func=cmd_account_me)
     add(acsub, "usage", help="get account usage").set_defaults(func=cmd_account_usage)
 
+    # --- mcp headers helper ---
+    mh = add(sub, "mcp-headers", help="print {\"Authorization\": \"Bearer <jwt>\"} for Claude Code's headersHelper (refreshes the token when under 24h left)")
+    mh.set_defaults(func=cmd_mcp_headers)
+
     # --- users ---
     u = add(sub, "users", help="manage site users")
     usub = u.add_subparsers(dest="users_cmd", required=True)
@@ -651,6 +655,15 @@ def cmd_plugins_list(args, cfg, endpoints):
 
 def cmd_themes_list(args, cfg, endpoints):
     return _run_op(OP_THEMES_LIST, {"id": args.site_id}, args, cfg, endpoints)
+
+def cmd_mcp_headers(args, cfg, endpoints):
+    """Claude Code runs this on every MCP connect and again after a 401. Reuse the
+    CLI's cache and login so the MCP and CLI share one credential file. Refresh
+    early (under 24h left) so a long session never straddles the 7-day expiry."""
+    token = get_token(cfg)
+    if not os.environ.get("ROCKET_API_TOKEN") and jwt_exp(token) < time.time() + 24 * 3600:
+        token = get_token(cfg, force=True)
+    return {"Authorization": f"Bearer {token}"}
 
 def cmd_account_me(args, cfg, endpoints):
     return _run_op(OP_ACCOUNT_ME, {}, args, cfg, endpoints)

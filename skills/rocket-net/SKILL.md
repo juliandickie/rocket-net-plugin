@@ -14,7 +14,7 @@ This plugin manages the Rocket.net HOSTING platform. It is not a WordPress conte
 
 ## Credentials
 
-CLI reads ~/.config/rocket-net/config.json (username+password recommended, or api_token; tokens are 7-day JWTs). The MCP uses the plugin's userConfig (keychain). Never put credentials in the repo.
+CLI reads ~/.config/rocket-net/config.json (username+password recommended, or api_token; tokens are 7-day JWTs). The bundled MCP reads the same file through `rocket.py mcp-headers` (Claude Code headersHelper), so one config file serves both tools. Never put credentials in the repo.
 
 ## Safety
 
