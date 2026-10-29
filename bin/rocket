@@ -1,0 +1,12 @@
+#!/bin/sh
+# Run rocket.py with the first working Python 3. On Windows (Git Bash), python3
+# is often missing or the Microsoft Store stub, which fails, so the py launcher
+# is tried first. The probe runs nothing from rocket.py, so a failed command is
+# never retried with another interpreter.
+for py in "py -3" python3 python; do
+  if $py -c "import sys; sys.exit(sys.version_info[0] != 3)" >/dev/null 2>&1; then
+    exec $py "$(dirname "$0")/rocket.py" "$@"
+  fi
+done
+echo "rocket: no working Python 3 found (tried py -3, python3, python). Install Python 3 from python.org." >&2
+exit 127

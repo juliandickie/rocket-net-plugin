@@ -2,7 +2,7 @@
 
 A Claude Code plugin to manage Rocket.net WordPress hosting two ways - conversationally through Rocket.net's bundled MCP server, and deterministically through a zero-dependency Python CLI. Skills and commands add the workflow knowledge on top.
 
-Status - v0.1.1. Build complete and validated (34 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is live-verified through Claude Code's own client (headersHelper ran, Bearer accepted, tool calls returned real data).
+Status - v0.1.2. Build complete and validated (36 unit tests, `claude plugin validate --strict`). Live-tested end to end against the real API - the full lifecycle (site create, clone, staging create and publish, WP-CLI, cache purge, backup create / restore / delete, site delete) is confirmed working, validated by spinning up a throwaway site, exercising every operation on it and its clone, then deleting both. The bundled MCP is live-verified through Claude Code's own client (headersHelper ran, Bearer accepted, tool calls returned real data). Version 0.1.2 makes the plugin start Python on Windows too, where `python3` is often missing or the Microsoft Store stub. That change is verified on macOS only so far, see the Windows launch section in DEVELOPMENT.md.
 
 Continuing development, or running on another machine? Read DEVELOPMENT.md first - it captures the live-API gotchas (Cloudflare user-agent, response envelope, task polling, which POST endpoints need bodies) and machine setup.
 
@@ -10,7 +10,7 @@ Continuing development, or running on another machine? Read DEVELOPMENT.md first
 
 - A bundled MCP server (`.mcp.json`) pointing at Rocket.net's hosted MCP at `https://mcp.rocket.net/mcp`. Best for conversational, one-off actions.
 
-- A CLI at `bin/rocket.py` (Python 3 standard library only). Best for scripted, bulk, and async work, and for anything you must wait on. Reaches all 198 API operations.
+- A CLI at `bin/rocket.py` (Python 3 standard library only), started through the `bin/rocket` launcher. Best for scripted, bulk, and async work, and for anything you must wait on. Reaches all 198 API operations.
 
 - 12 skills and 5 commands that encode how to run common workflows safely.
 
@@ -22,9 +22,9 @@ One credential file feeds both tools.
 
 - CLI - create `~/.config/rocket-net/config.json` (chmod 600) with either Rocket.net `username` and `password` (recommended, the CLI auto-mints and refreshes the token) or a manual `api_token`. See `.env.example`. Note - Rocket.net has no permanent API key; tokens are JWTs that expire after 7 days, which is why username and password is the low-maintenance choice.
 
-- MCP - the bundled server needs an `Authorization: Bearer <JWT>` header on every call. The plugin supplies it through Claude Code's `headersHelper`, which runs `rocket.py mcp-headers` on each connection (and again after any 401). That command reads the SAME config file as the CLI, so there is one credential store, and it refreshes the token when under 24 hours remain.
+- MCP - the bundled server needs an `Authorization: Bearer <JWT>` header on every call. The plugin supplies it through Claude Code's `headersHelper`, which runs `rocket.py mcp-headers` (with `py -3`, or `python3` where `py` is missing) on each connection (and again after any 401). That command reads the SAME config file as the CLI, so there is one credential store, and it refreshes the token when under 24 hours remain.
 
-Note - Rocket.net sits behind Cloudflare, which blocks the default Python user-agent (error 1010). The CLI sends its own `rocket-net-cli/0.1.0` User-Agent so requests pass; override it with the `ROCKET_USER_AGENT` env var if needed. Two-factor authentication on your account does not block the API login (2FA gates only the web dashboard).
+Note - Rocket.net sits behind Cloudflare, which blocks the default Python user-agent (error 1010). The CLI sends its own `rocket-net-cli/<version>` User-Agent so requests pass; override it with the `ROCKET_USER_AGENT` env var if needed. Two-factor authentication on your account does not block the API login (2FA gates only the web dashboard).
 
 ## Team setup guide
 
@@ -59,7 +59,7 @@ Nothing prompts for a login. Both the bundled MCP server and the CLI read the co
 
 ### Create the config file (required)
 
-Replace the two values and run:
+Replace the two values and run it. On Windows, run this and the check below in Git Bash, which installs with Git for Windows.
 
 ```bash
 mkdir -p ~/.config/rocket-net && printf '{"username":"you@example.com","password":"YOUR_PASSWORD","base_url":"https://api.rocket.net"}\n' > ~/.config/rocket-net/config.json && chmod 600 ~/.config/rocket-net/config.json
@@ -72,7 +72,7 @@ The chmod step matters. It makes the file readable only by your user. Claude Cod
 List the sites your login can see. This is read-only.
 
 ```bash
-python3 ~/.claude/plugins/cache/outfit/rocket-net/*/bin/rocket.py sites list
+~/.claude/plugins/cache/outfit/rocket-net/*/bin/rocket sites list
 ```
 
 If it returns your sites, you are done. If it returns a 401, the email or password is wrong. If it returns a Cloudflare error 1010, something has overridden the CLI's User-Agent; unset `ROCKET_USER_AGENT` and try again.
@@ -93,7 +93,7 @@ Update the config file above with the new password and delete `~/.config/rocket-
 
 ## CLI usage
 
-Run it as `python3 bin/rocket.py <command>` (or `python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py` inside the plugin).
+Run it as `bin/rocket <command>` (or `"${CLAUDE_PLUGIN_ROOT}/bin/rocket"` inside the plugin). `bin/rocket` is a sh launcher. It runs `bin/rocket.py` with the first working Python 3 it finds, `py -3`, then `python3`, then `python`, so the same command works on macOS, Linux and Windows Git Bash. PowerShell cannot run it, so in PowerShell run `py -3 bin/rocket.py <command>`.
 
 Ergonomic subcommands (run any with `--help`) - `sites list|get`, `site create|clone|delete`, `staging create|publish`, `wpcli`, `backup list|create|restore|get|delete|automated|cloud-list`, `cache purge|purge-files`, `domains list|add|remove`, `ssl list|get|upload|delete`, `plugins list|install|update|set-status|delete|search`, `themes list|install|update|set-status|delete|search`, `users list|add|remove`, `ssh list|add|remove|authorize|deauthorize`, `ftp list|add|update|remove`, `settings get|schema|update`, `reporting bandwidth|visitors|requests`, `pwprotect status|enable|disable|users|add-user|remove-user`, `credentials`, `access-logs`, `maindomain get|status`, `account me|usage`.
 
@@ -106,12 +106,12 @@ Global flags go AFTER the subcommand - `--wait` (poll the resulting task to comp
 Examples.
 
 ```
-python3 bin/rocket.py sites list
-python3 bin/rocket.py wpcli 12345 -- option get blogname
-python3 bin/rocket.py cache purge 12345
-python3 bin/rocket.py backup create 12345 --label nightly --wait
-python3 bin/rocket.py staging publish 12345 --yes --wait
-python3 bin/rocket.py call <operationId> --param id=12345 --data '{...}' --wait
+bin/rocket sites list
+bin/rocket wpcli 12345 -- option get blogname
+bin/rocket cache purge 12345
+bin/rocket backup create 12345 --label nightly --wait
+bin/rocket staging publish 12345 --yes --wait
+bin/rocket call <operationId> --param id=12345 --data '{...}' --wait
 ```
 
 ## Safety model
@@ -153,6 +153,7 @@ Then `/reload-plugins` to hot-reload after changes. Validate with `claude plugin
 ```
 .claude-plugin/plugin.json   manifest (defaultEnabled false)
 .mcp.json                    bundled Rocket.net remote MCP
+bin/rocket                   sh launcher, runs rocket.py with a working Python 3
 bin/rocket.py                the CLI engine
 bin/rocket_endpoints.json    generated operationId map
 scripts/build_endpoints.py   spec to map converter (build-time)

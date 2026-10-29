@@ -16,7 +16,7 @@ A Claude Code plugin to manage Rocket.net WordPress hosting. Hybrid architecture
 
 These were discovered during a live smoke test on 2026-05-20-era WordPress 7.0 hosting accounts. They are partly encoded in the code, but consolidated here because they will bite anyone extending the plugin.
 
-- Cloudflare blocks the default user-agent. The API (api.rocket.net) sits behind Cloudflare, which returns HTTP 403 "error 1010 browser_signature_banned" for the default `Python-urllib` user-agent. ANY other UA passes (even `python-requests`). The CLI sends `rocket-net-cli/0.1.0` (constant `USER_AGENT`, override with env `ROCKET_USER_AGENT`). Expect this on any Cloudflare-fronted API.
+- Cloudflare blocks the default user-agent. The API (api.rocket.net) sits behind Cloudflare, which returns HTTP 403 "error 1010 browser_signature_banned" for the default `Python-urllib` user-agent. ANY other UA passes (even `python-requests`). The CLI sends `rocket-net-cli/<version>` (constant `USER_AGENT`, override with env `ROCKET_USER_AGENT`). Expect this on any Cloudflare-fronted API.
 
 - Two-factor authentication does NOT block the API. Account 2FA gates only the web dashboard. `POST /v1/login {username, password}` returns `{token}` (a JWT, 7-day expiry) even with 2FA enabled. There is no permanent API key; a 401 means the token expired, re-login.
 
@@ -55,7 +55,7 @@ These were discovered during a live smoke test on 2026-05-20-era WordPress 7.0 h
 
 ## Testing
 
-- Unit tests (offline, no network, no creds): `python3 -m unittest tests.test_rocket -v`. 34 tests covering config/auth/http/envelope/task-find/op-constants/subcommands/guards/create-and-wait/long-tail.
+- Unit tests (offline, no network, no creds): `python3 -m unittest tests.test_rocket -v`. 36 tests covering config/auth/http/envelope/task-find/op-constants/subcommands/guards/create-and-wait/long-tail.
 
 - Live smoke test (needs creds + a real site): `ROCKET_SMOKE_SITE=<id> ./scripts/test-smoke.sh`. Only ever run against a throwaway or staging site, never production.
 
@@ -93,6 +93,38 @@ Discovered while diagnosing production errors on a client site through the API w
 
 The hosted server at mcp.rocket.net ignores custom credential headers. Its own initialize instructions say - HTTP (Streamable) needs `Authorization: Bearer <JWT>` on each POST, headers apply per tool call; local stdio uses `ROCKETNET_API_TOKEN`. The original `.mcp.json` sent `ROCKETNET_USERNAME` and `ROCKETNET_PASSWORD` headers from `userConfig`; those never reached the server (its error echoes the header names it received and ours were absent) and every tool call failed with "Missing Authorization header with Bearer token". The anonymous handshake and tools/list succeed, so "Connected" in `claude mcp list` proves nothing about auth.
 
-Fix - `headersHelper: python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py mcp-headers --json`. Constraints that shaped it - a plugin headersHelper cannot reference `${user_config.*}` (Claude Code reports the server misconfigured), `${CLAUDE_PLUGIN_ROOT}` does substitute, and env vars with TOKEN, SECRET, PASSWORD, KEY, or AUTH in the name are stripped from the helper's environment, so the helper must read the config file rather than env. `userConfig` was removed from the manifest as a result.
+Fix - `headersHelper: python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py mcp-headers --json`. Constraints that shaped it - a plugin headersHelper cannot reference `${user_config.*}` (Claude Code reports the server misconfigured), `${CLAUDE_PLUGIN_ROOT}` does substitute, and env vars with TOKEN, SECRET, PASSWORD, KEY, or AUTH in the name are stripped from the helper's environment, so the helper must read the config file rather than env. `userConfig` was removed from the manifest as a result. The command itself was replaced on 2026-10-29, see "Windows launch - 2026-10-29" below.
 
 Verification - registered the server at local scope with a logging wrapper and drove it with a child `claude -p` (no Bash) restricted to `mcp__rocket-net-e2e__get_v1_sites`. The helper ran three times (connect plus reconnects) with `CLAUDE_CODE_MCP_SERVER_NAME` set and no password env present, and the tool returned the real site list. `claude mcp list` alone never invokes the helper, and an untrusted workspace refuses to run it at all. Wrong tokens return a clean 401 through the tool result.
+
+## Windows launch - 2026-10-29
+
+Problem - on Windows, python.org Python installs the `py` launcher, and `python3` is usually missing or the Microsoft Store stub (an App Execution Alias that prints "Python was not found" and exits 9009). Version 0.1.1 called `python3` in every place, so on those machines the MCP got no Bearer header and every skill and command failed.
+
+How Claude Code runs each piece. This was read from the 2.1.302 binary and the docs at code.claude.com on 2026-10-29.
+
+- `headersHelper`. Claude Code replaces `${CLAUDE_PLUGIN_ROOT}` in the string with the plugin path before any shell sees it (documented on the MCP page). It then spawns the string with `shell: true`, which is `sh` on macOS and Linux and `cmd.exe` on Windows (from the binary; the docs only say "in a shell"). The working folder is the plugin root, and on Windows the path keeps its backslashes.
+- Skills and commands. Claude Code substitutes `${CLAUDE_PLUGIN_ROOT}` into the Markdown when it loads it (documented on the skills page). The variable is NOT in the Bash tool's environment, so the old fleet-ops snippet that read `os.environ['CLAUDE_PLUGIN_ROOT']` failed on every platform.
+- Bash tool. On Windows it runs Git Bash. Claude Code falls back to a PowerShell tool only when Git for Windows is missing (documented on the setup page).
+
+Fix.
+
+- `headersHelper` is `py -3 "${CLAUDE_PLUGIN_ROOT}/bin/rocket.py" mcp-headers --json || python3 "${CLAUDE_PLUGIN_ROOT}/bin/rocket.py" mcp-headers --json`. `sh`, Git Bash and `cmd.exe` all read `||` and double quotes the same way. `py` goes first so a Store stub never writes into the helper's output. The fallback can run the helper twice, which is safe because `mcp-headers` only reads the config and mints a token. Windows PowerShell 5.1 cannot parse `||`, but it never runs the helper.
+- Skills and commands call `"${CLAUDE_PLUGIN_ROOT}/bin/rocket"`, a POSIX sh launcher. It probes `py -3`, `python3` and `python` with a one-line check and runs rocket.py with the first that works. It probes instead of using `||` because `||` would re-run a failed command with the second interpreter, and a restore that timed out under `--wait` must never run twice. The quotes keep a path with spaces, such as `C:\Users\First Last\...`, as one word.
+- PowerShell cannot run the sh launcher. The router skill tells Claude to run `py -3 ".../bin/rocket.py"` there.
+- The fleet-ops snippet now uses `[sys.executable, r"${CLAUDE_PLUGIN_ROOT}/bin/rocket.py"]`. The raw string keeps Windows backslashes intact.
+
+Verified on macOS (Claude Code 2.1.302, 2026-10-29).
+
+- `bin/rocket account me` returned the live account. With fake programs on `PATH`, the launcher skipped a Store-stub `python3` for `py`, used `python3` when `py` was absent, failed loud with exit 127 when nothing worked, and ran a failing command once only.
+- The helper string, substituted and run through `sh -c` the way Claude Code runs it, returned an `Authorization: Bearer` header. It also worked from a path with a space in it.
+- A child `claude -p --plugin-dir` in an empty config folder loaded `rocket-net@inline` 0.1.2. The skill text reached the model as `"<plugin root>/bin/rocket" account me`, and that exact command returned the account. The debug log showed `Successfully retrieved 1 headers from headersHelper`, and the MCP tool `get_v1_account_me` returned `"success": true`.
+- 36 unit tests pass, and `claude plugin validate . --strict` passes.
+
+Testing gotchas found on the way.
+
+- An installed `rocket-net@outfit` shadows `--plugin-dir`. The child session loaded the cached 0.1.1 instead of the worktree.
+- Because the manifest sets `defaultEnabled: false`, a `--plugin-dir` copy loads disabled. Enable it for the run with `--settings '{"enabledPlugins":{"rocket-net@inline":true}}'`.
+- Running a child from the plugin folder itself registers its `.mcp.json` as a project server, which needs workspace trust. Run the child from a neutral folder.
+
+Not verified - Windows. Nobody has run this on a Windows machine yet. The check list for a Windows teammate is in the pull request that landed this change.

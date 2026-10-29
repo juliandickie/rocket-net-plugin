@@ -10,19 +10,19 @@ Covers account profile, hosting plan, usage, billing addresses, payment methods,
 ## Account profile
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py account me
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" account me
 ```
 
 Or:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_controller.account_me_get
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.account_controller.account_me_get
 ```
 
 Update account settings:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_controller.account_me_patch --data '{"name":"New Name"}'
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.account_controller.account_me_patch --data '{"name":"New Name"}'
 ```
 
 ## Usage
@@ -30,19 +30,19 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_control
 Account-level resource usage:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py account usage
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" account usage
 ```
 
 Or:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_controller.account_usage_get
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.account_controller.account_usage_get
 ```
 
 Site-level usage:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.sites_controller.sites_id_usage_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.sites_controller.sites_id_usage_get --param id=<site_id>
 ```
 
 ## Hosting plan
@@ -50,7 +50,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.sites_controlle
 Get current plan:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_controller.get_hosting_plan
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.account_controller.get_hosting_plan
 ```
 
 ## Account tasks
@@ -58,7 +58,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_control
 List background tasks at the account level:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_controller.account_tasks_get
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.account_controller.account_tasks_get
 ```
 
 ## Billing addresses
@@ -66,13 +66,13 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_control
 List addresses:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_addresses
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_addresses
 ```
 
 Get a specific address:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_addresses_address_id --param address_id=<address_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_addresses_address_id --param address_id=<address_id>
 ```
 
 ## Payment methods
@@ -80,13 +80,13 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_control
 List payment methods:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_payment_methods
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_payment_methods
 ```
 
 Get a specific payment method:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_payment_methods_method_id --param payment_method_id=<payment_method_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_payment_methods_method_id --param payment_method_id=<payment_method_id>
 ```
 
 ## Invoices
@@ -94,19 +94,19 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_control
 List invoices:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_invoices
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_invoices
 ```
 
 Get a specific invoice:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_invoices_invoice_id --param invoice_id=<invoice_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_invoices_invoice_id --param invoice_id=<invoice_id>
 ```
 
 Download invoice PDF:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_controller.get_billing_invoices_invoice_id_pdf --param invoice_id=<invoice_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.billing_controller.get_billing_invoices_invoice_id_pdf --param invoice_id=<invoice_id>
 ```
 
 ## Billing SSO
@@ -114,7 +114,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.billing_control
 Get a cookie for billing portal access:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.account_controller.account_billing_sso_post
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.account_controller.account_billing_sso_post
 ```
 
 ## Payment actions - keep manual
