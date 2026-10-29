@@ -10,7 +10,7 @@ Rocket.net exposes WP-CLI via the API. Commands run on the server without SSH ac
 ## Basic usage
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- <wp-cli args>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- <wp-cli args>
 ```
 
 The `--` separator passes everything after it as the WP-CLI command string.
@@ -18,13 +18,13 @@ The `--` separator passes everything after it as the WP-CLI command string.
 ## Read-only examples (safe, no confirmation needed)
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- option get blogname
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- option get siteurl
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- plugin list
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- theme list
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- user list --fields=ID,user_login,user_email,roles
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- core version
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- cron event list
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- option get blogname
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- option get siteurl
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- plugin list
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- theme list
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- user list --fields=ID,user_login,user_email,roles
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- core version
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- cron event list
 ```
 
 ## Write commands - dry-run first
@@ -34,28 +34,28 @@ For any command that changes data, show the user a dry-run output first and conf
 Dry-run example for search-replace:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- search-replace 'http://old.com' 'https://new.com' --dry-run --all-tables
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- search-replace 'http://old.com' 'https://new.com' --dry-run --all-tables
 ```
 
 Then on confirmation:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- search-replace 'http://old.com' 'https://new.com' --all-tables
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- search-replace 'http://old.com' 'https://new.com' --all-tables
 ```
 
 ## Plugin and core updates
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- plugin update --all --dry-run
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- plugin update --all
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- core update
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- plugin update --all --dry-run
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- plugin update --all
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- core update
 ```
 
 ## User management
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- user create editor@example.com editor --role=editor
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- user update 1 --user_pass=newpass
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- user create editor@example.com editor --role=editor
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- user update 1 --user_pass=newpass
 ```
 
 ## Underlying operationId
@@ -63,7 +63,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- user update 1 --u
 The CLI wpcli subcommand uses `app.controllers.wordpress_controller.sites_id_wpcli_post` (POST /v1/sites/{id}/wpcli). You can also call it directly:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.wordpress_controller.sites_id_wpcli_post --param id=<site_id> --data '{"command":"option get blogname"}'
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.wordpress_controller.sites_id_wpcli_post --param id=<site_id> --data '{"command":"option get blogname"}'
 ```
 
 ## Safety summary

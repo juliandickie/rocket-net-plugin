@@ -12,19 +12,19 @@ Covers custom domains, the main domain, edge (CDN and proxy) settings, and SSL c
 List domains on a site:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains list <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" domains list <site_id>
 ```
 
 Add a custom domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains add <site_id> --domain example.com
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" domains add <site_id> --domain example.com
 ```
 
 Remove a domain - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains remove <site_id> <domain_id> --yes
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" domains remove <site_id> <domain_id> --yes
 ```
 
 ## Main domain
@@ -32,19 +32,19 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py domains remove <site_id> <domain_id>
 Get the primary domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py maindomain get <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" maindomain get <site_id>
 ```
 
 DNS status of the primary domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py maindomain status <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" maindomain status <site_id>
 ```
 
 Force a DNS recheck (generic call):
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_recheck_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.domains_controller.sites_id_maindomain_recheck_get --param id=<site_id>
 ```
 
 ## Edge settings (generic call)
@@ -54,15 +54,15 @@ Edge settings control CDN and proxy behaviour per domain. Read before patching; 
 Main domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_edge_settings_get --param id=<site_id>
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_maindomain_edge_settings_patch --param id=<site_id> --data '{"ssl_mode":"full"}'
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.domains_controller.sites_id_maindomain_edge_settings_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.domains_controller.sites_id_maindomain_edge_settings_patch --param id=<site_id> --data '{"ssl_mode":"full"}'
 ```
 
 A specific additional domain:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_get --param id=<site_id> --param domain_id=<domain_id>
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_patch --param id=<site_id> --param domain_id=<domain_id> --data '{"ssl_mode":"full"}'
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_get --param id=<site_id> --param domain_id=<domain_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.domains_controller.sites_id_domains_domain_id_edge_settings_patch --param id=<site_id> --param domain_id=<domain_id> --data '{"ssl_mode":"full"}'
 ```
 
 ## SSL certificates
@@ -70,25 +70,25 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.domains_control
 List certificates (returns an empty list when the site uses only the platform certificate):
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl list <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" ssl list <site_id>
 ```
 
 Get one certificate:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl get <site_id> <certificate_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" ssl get <site_id> <certificate_id>
 ```
 
 Upload a custom certificate. Domains are comma-separated; certificate and key are paths to PEM files, read locally and sent in the body:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl upload <site_id> --domains example.com,www.example.com --certificate-file ./cert.pem --key-file ./key.pem
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" ssl upload <site_id> --domains example.com,www.example.com --certificate-file ./cert.pem --key-file ./key.pem
 ```
 
 Delete a certificate - requires --yes:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py ssl delete <site_id> <certificate_id> --yes
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" ssl delete <site_id> <certificate_id> --yes
 ```
 
 ## Safety summary

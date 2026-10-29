@@ -9,7 +9,7 @@ TOKEN_CACHE = os.path.expanduser("~/.config/rocket-net/.token")
 DEFAULT_BASE = "https://api.rocket.net"
 # Rocket.net is behind Cloudflare, which 403-bans the default Python-urllib UA (CF error 1010).
 # Any non-default User-Agent passes; use an honest one. Overridable via env for flexibility.
-USER_AGENT = os.environ.get("ROCKET_USER_AGENT", "rocket-net-cli/0.1.1")
+USER_AGENT = os.environ.get("ROCKET_USER_AGENT", "rocket-net-cli/0.1.2")
 
 # --- Config ---
 

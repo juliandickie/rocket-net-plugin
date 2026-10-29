@@ -12,7 +12,7 @@ Rocket.net uses a CDN cache layer in front of each site. Purging is non-destruct
 `cache purge` clears the whole CDN cache for the site. Non-destructive (content is unaffected; cache rebuilds on next request). This is the common case.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py cache purge <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" cache purge <site_id>
 ```
 
 ## Purge specific file URLs
@@ -20,7 +20,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py cache purge <site_id>
 `cache purge-files` purges only the listed URLs (the underlying endpoint requires a file list).
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py cache purge-files <site_id> https://example.com/page/ https://example.com/style.css
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" cache purge-files <site_id> https://example.com/page/ https://example.com/style.css
 ```
 
 ## When to purge
@@ -36,19 +36,19 @@ Purge after:
 View cache status breakdown:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.reporting_controller.reporting_sites_id_cdn_cache_status_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.reporting_controller.reporting_sites_id_cdn_cache_status_get --param id=<site_id>
 ```
 
 View top cached content:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.reporting_controller.reporting_sites_id_cdn_cache_top_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.reporting_controller.reporting_sites_id_cdn_cache_top_get --param id=<site_id>
 ```
 
 View CDN request volume:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.reporting_controller.reporting_sites_id_cdn_requests_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.reporting_controller.reporting_sites_id_cdn_requests_get --param id=<site_id>
 ```
 
 ## Fleet cache purge

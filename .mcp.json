@@ -3,7 +3,7 @@
     "rocket-net": {
       "type": "http",
       "url": "https://mcp.rocket.net/mcp",
-      "headersHelper": "python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py mcp-headers --json"
+      "headersHelper": "py -3 \"${CLAUDE_PLUGIN_ROOT}/bin/rocket.py\" mcp-headers --json || python3 \"${CLAUDE_PLUGIN_ROOT}/bin/rocket.py\" mcp-headers --json"
     }
   }
 }

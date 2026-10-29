@@ -10,7 +10,7 @@ Fleet ops apply a single action across many sites. The CLI does not have a nativ
 ## Step 1 - get the site list
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py sites list
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" sites list
 ```
 
 Parse the JSON response to extract site IDs and names. Confirm the target set with the user before proceeding.
@@ -30,12 +30,14 @@ Get explicit approval before running.
 For batch read operations (no approval needed):
 
 ```python
-import json, subprocess, concurrent.futures, os
+import json, subprocess, concurrent.futures, sys
 
-CLI = f"python3 {os.environ['CLAUDE_PLUGIN_ROOT']}/bin/rocket.py"
+# The running Python, so no python3 lookup (Windows-safe). Claude Code fills in the
+# path when it loads this skill; CLAUDE_PLUGIN_ROOT is not in the Bash tool's environment.
+CLI = [sys.executable, r"${CLAUDE_PLUGIN_ROOT}/bin/rocket.py"]
 
 def run(site_id):
-    r = subprocess.run([*CLI.split(), "cache", "purge", site_id],
+    r = subprocess.run([*CLI, "cache", "purge", site_id],
                        capture_output=True, text=True)
     return site_id, r.returncode, r.stdout.strip(), r.stderr.strip()
 
@@ -53,26 +55,26 @@ for sid, rc, out, err in results:
 Purge cache on all sites:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py cache purge <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" cache purge <site_id>
 # repeat per site (or parallelise as above)
 ```
 
 Run the same WP-CLI command across all sites:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py wpcli <site_id> -- plugin update --all
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" wpcli <site_id> -- plugin update --all
 ```
 
 Pull bandwidth report for all sites:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.reporting_controller.reporting_sites_id_bandwidth_usage_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.reporting_controller.reporting_sites_id_bandwidth_usage_get --param id=<site_id>
 ```
 
 List plugins on all sites (audit):
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.plugins_controller.sites_id_plugins_get --param id=<site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.plugins_controller.sites_id_plugins_get --param id=<site_id>
 ```
 
 ## Destructive batch ops

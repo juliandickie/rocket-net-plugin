@@ -10,7 +10,7 @@ This plugin manages the Rocket.net HOSTING platform. It is not a WordPress conte
 ## Two tools, when to use each
 
 - Bundled MCP (rocket-net server): conversational one-off actions. "Spin up a site", "what is using disk on site X".
-- CLI `bin/rocket.py`: deterministic, scripted, bulk, or anything you must wait on. Run `python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py <command>`.
+- CLI `bin/rocket.py`: deterministic, scripted, bulk, or anything you must wait on. Run `"${CLAUDE_PLUGIN_ROOT}/bin/rocket" <command>`. `bin/rocket` is a sh launcher that runs `bin/rocket.py` with the first working Python 3 (`py -3`, then `python3`, then `python`), so the same command works on macOS, Linux and Windows Git Bash. In PowerShell, which cannot run the launcher, run `py -3 "${CLAUDE_PLUGIN_ROOT}/bin/rocket.py" <command>` instead.
 
 ## Credentials
 

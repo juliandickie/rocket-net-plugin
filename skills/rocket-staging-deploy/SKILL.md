@@ -10,7 +10,7 @@ Staging is a full copy of the production site isolated from live traffic. Publis
 ## Read current state first
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py sites get <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" sites get <site_id>
 ```
 
 Check whether staging already exists before creating it.
@@ -20,7 +20,7 @@ Check whether staging already exists before creating it.
 Non-destructive. Returns an async task.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py staging create <site_id> --wait
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" staging create <site_id> --wait
 ```
 
 ## Delete staging
@@ -28,7 +28,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py staging create <site_id> --wait
 Removes the staging environment (not production). Requires --yes.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py call app.controllers.sites_controller.sites_id_staging_delete --param id=<site_id> --yes
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" call app.controllers.sites_controller.sites_id_staging_delete --param id=<site_id> --yes
 ```
 
 ## Scope review before publishing
@@ -43,7 +43,7 @@ Before running publish, present a scope review containing:
 Recommend taking a backup before publishing:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py backup create <site_id> --wait
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" backup create <site_id> --wait
 ```
 
 ## Publish staging to production
@@ -51,7 +51,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py backup create <site_id> --wait
 Destructive - overwrites production. Requires --yes and explicit user approval after scope review.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py staging publish <site_id> --yes --wait
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" staging publish <site_id> --yes --wait
 ```
 
 ## After publishing
@@ -59,7 +59,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py staging publish <site_id> --yes --wa
 Purge cache to ensure visitors see the new version:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/bin/rocket.py cache purge <site_id>
+"${CLAUDE_PLUGIN_ROOT}/bin/rocket" cache purge <site_id>
 ```
 
 Verify the site responds and report the outcome.
